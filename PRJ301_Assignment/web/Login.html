@@ -1,0 +1,128 @@
+
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <title>Login</title>
+    <style>
+        *
+        {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        
+        body
+        {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #C2E8F5;
+        }
+        /*tăng kích thước tổng thể*/ 
+        .container
+        {
+           display: flex;
+           width: 1000px;
+           height: 400px;
+           background: white;
+           border-radius: 12px;
+           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+           overflow: hidden;
+        }
+        
+        .left
+        {
+            flex: 1;
+            padding: 40px;
+        }
+        
+        .right
+        {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #eef2ff;
+            padding: 20px;
+        }
+        
+        .right img
+        {
+            width: 105%;
+            height: 100%;
+            border-radius: 15px;
+        }
+        
+        h2
+        {
+            text-align: center;
+            font-weight: 600;
+            color: black;
+            margin-bottom: 20px;
+        }
+        
+        input
+        {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        
+        input:focus
+        {
+            border-color: #3B82F6;
+            outline: none;
+            box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+        }
+        
+        .login
+        {
+            width: 100%;
+            padding: 12px;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        
+        .forgot_password, .signup
+        {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            color: #3B82F6;
+            font-size: 14px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+    </style>
+    <body>
+        <div class="container">
+            <div class="left">
+                <h2>Login</h2>
+                <form action="Login" method="POST">
+                    <input type="text" name="username" placeholder="Uername or email" required/>
+                    <input type="password" name="password" placeholder="Password" required/>
+                    <input type="submit" name="Login" class="login">
+                    <a href="#" class="forgot_password">Forgot password?</a>
+                    <a href="#" class="signup">Don't have an account? Sign up</a>
+                </form>
+            </div>
+            <div class="right">
+                <img src="img/login.jpg" >
+            </div>
+        </div>
+    </body>
+</html>
