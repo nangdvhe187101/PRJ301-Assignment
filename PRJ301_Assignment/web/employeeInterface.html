@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hệ Thống Quản lý Nghỉ Phép</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body
+            {
+                font-family: sans-serif;
+                margin: 0;
+                background: #eef2f7;
+            }
+            
+            .navbar
+            {
+                background: #008080;
+                padding: 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: white;
+            }
+            
+            .logout
+            {
+                background: red;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-size: 15px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="navbar">
+            <h2>Hệ Thống Quản Lý Nghỉ Phép</h2>
+            <button class="logout">Đăng xuất</button>
+        </div>
+        <div class="main-container">
+            <div class="sidebar">
+                <h3>Nhân Viên</h3>
+                <a href="#">📂 Xem đơn nghỉ phép</a>
+                <a href="#">📝 Tạo đơn nghỉ phép</a>
+                <a href="#">📅 Lịch nghỉ phép</a>
+            </div>
+            <div class="content">
+                <h3>Chào mừng</h3>
+                <p>Hệ Thống quản lý nghỉ phép</p>
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button>Tháng trước</button>
+                        <h4>Tháng 2 năm 2025</h4>
+                        <button>Tháng trước</button>
+                    </div>
+                    <table class="calendar-table">
+                        <thead>
+                            <tr>
+                                <td>Thứ hai</td>
+                                <td>Thứ ba</td>
+                                <td>Thứ tư</td>
+                                <td>Thứ năm</td>
+                                <td>Thứ sáu</td>
+                                <td>Thứ bảy</td>
+                                <td>Chủ nhật</td>
+                            </tr>
+                        </thead>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
