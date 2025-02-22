@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-              <style>
+        <style>
             body
             {
                 font-family: sans-serif;
@@ -19,7 +19,7 @@
 
             .navbar
             {
-                background: #008080;
+                background: #007bff;
                 padding: 20px;
                 display: flex;
                 justify-content: space-between;
@@ -29,9 +29,8 @@
 
             .logout
             {
-                background: red;
-                color: white;
-                border: none;
+                background: white;
+                border: 1px none black;
                 padding: 10px 15px;
                 border-radius: 5px;
                 font-size: 15px;
@@ -50,6 +49,10 @@
                 color: white;
                 padding: 20px;
                 flex-shrink: 0;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                border-radius: 5px;
             }
 
             .sidebar a
@@ -58,6 +61,10 @@
                 text-decoration: none;
                 display: block;
                 border-radius: 5px;
+                align-items: center;
+                padding: 12px 15px;
+                margin-bottom: 5px;
+
             }
 
             .content
@@ -114,11 +121,75 @@
                 background: #007bff;
                 color: white;
             }
+
             
+            /**********/
+            
+            
+            .leave-form
+        {
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .leave-form h2
+        {
+            margin-bottom: 15px;
+        }
+        
+        .leave-form p
+        {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .leave-form label
+        {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .leave-form input, .leave-form textarea
+        {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 15px;
+            border: 1px solid ;
+            border-radius: 10px;
+        }
+        
+        .btn-group
+        {
+            display: flex;
+            margin-top: 20px;
+            justify-content: space-evenly;
+            
+        }
+        
+        .btn
+        {
+            padding: 15px 20px;
+            border: none;
+            font-size: 15px;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+        }
         </style>
 
         <script>
-            
+            function showForm()
+            {
+                document.getElementById('leave-form').style.display = "block";
+            }
+        </script>
+        <script>
+
+            //
             let currentMonth = new Date().getMonth() + 1;//vì js tính từ 0-11 nên + 1 
             let currentYear = new Date().getFullYear();
             //thay đổi tháng năm
@@ -147,15 +218,13 @@
                     let row = document.createElement("tr");//tạo hàng
                     for (let j = 0; j < 7; j++) {
                         let cell = document.createElement("td");//tạo ô
-                        if (i === 0 && j < firstDay) 
+                        if (i === 0 && j < firstDay)
                         {
                             cell.innerHTML = "";//trống nếu chưa đến ngày đầu tiên trong tháng
-                        }
-                        else if(date > daysMonth)
+                        } else if (date > daysMonth)
                         {
                             break;
-                        }
-                        else
+                        } else
                         {
                             cell.innerHTML = date;//gán số vào ô
                             date++;//ngày ++
@@ -165,7 +234,7 @@
                     table.appendChild(row);//thêm hàng vào bảng
                 }
             }
-            
+
             //cập nhật ngày tháng và bảng lịch
             function updateCalendar()
             {
@@ -173,7 +242,7 @@
                 generateCalendar();
             }
             //chạy sau khi tải xong html
-            document.addEventListener("DOMContentLoaded",updateCalendar);
+            document.addEventListener("DOMContentLoaded", updateCalendar);
         </script>
     </head>
     <body>
@@ -184,8 +253,8 @@
         <div class="main-container">
             <div class="sidebar">
                 <h3>Nhân Viên</h3>
-                <a href="#">📂 Xem đơn nghỉ phép</a>
-                <a href="#">📝 Tạo đơn nghỉ phép</a>
+                <a href="#">🏠 Trang chủ</a>
+                <a href="#" onclick="showForm()">📝 Tạo đơn nghỉ phép</a>
                 <a href="#">📅 Lịch nghỉ phép</a>
             </div>
             <div class="content">
@@ -211,8 +280,29 @@
                         </thead>
                         <tbody id="calendar-body"></tbody>
                     </table>
-                </div>
+                </div>                
             </div>
+            <div class="leave-form" id="leave-form">
+                    <h2>Đơn xin nghỉ phép</h2>
+                    <p>
+                        <b>User</b> ,
+                        <b>Role</b> ,
+                        <b>Dep</b> ,
+                    </p>
+                    <form>
+                        <label>Từ ngày:</label>
+                        <input type="date">
+                        <label>Tới ngày:</label>
+                        <input type="date">
+                        <label>Lý do</label>
+                        <textarea></textarea>
+
+                        <div class="btn-group">
+                            <button class="btn" type="submit">Gửi</button>
+                            <button class="btn" type="reset">Hủy</button>
+                        </div>
+                    </form>
+                </div>
         </div>
     </body>
 </html>

@@ -57,9 +57,9 @@
         
         .right img
         {
-            width: 105%;
-            height: 100%;
-            border-radius: 15px;
+            width: 110%;
+            height: 112%;            
+            object-fit: cover;
         }
         
         h2
