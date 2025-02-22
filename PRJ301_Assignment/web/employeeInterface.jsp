@@ -1,10 +1,15 @@
+<%-- 
+    Document   : employ
+    Created on : Feb 22, 2025, 11:46:47 PM
+    Author     : ADMIN
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Hệ Thống Quản lý Nghỉ Phép</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+              <style>
             body
             {
                 font-family: sans-serif;
@@ -171,7 +176,6 @@
             document.addEventListener("DOMContentLoaded",updateCalendar);
         </script>
     </head>
-
     <body>
         <div class="navbar">
             <h2>Hệ Thống Quản Lý Nghỉ Phép</h2>

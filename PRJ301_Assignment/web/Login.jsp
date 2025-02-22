@@ -1,11 +1,15 @@
+<%-- 
+    Document   : Home
+    Created on : Feb 22, 2025, 11:44:03 PM
+    Author     : ADMIN
+--%>
 
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
     <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <title>Login</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Login</title>
     <style>
         *
         {
@@ -108,6 +112,7 @@
             transition: 0.3s;
         }
     </style>
+    </head>
     <body>
         <div class="container">
             <div class="left">
