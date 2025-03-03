@@ -118,11 +118,9 @@
             <div class="left">
                 <h2>Login</h2>
                 <form action="Login" method="POST">
-                    <input type="text" name="username" placeholder="Uername or email" required/>
+                    <input type="text" name="username" placeholder="Uername" required/>
                     <input type="password" name="password" placeholder="Password" required/>
-                    <input type="submit" name="Login" class="login">
-                    <a href="#" class="forgot_password">Forgot password?</a>
-                    <a href="#" class="signup">Don't have an account? Sign up</a>
+                    <input type="submit" name="Login" class="login">                  
                 </form>
             </div>
             <div class="right">
