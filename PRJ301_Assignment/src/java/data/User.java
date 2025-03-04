@@ -9,32 +9,34 @@ package data;
  * @author ADMIN
  */
 public class User {
-    private String usernameString;
-    private int password;
-    private String displaynameString;
+    private String username;
+    private String password;
+    private String displayname;
 
     public String getUsernameString() {
-        return usernameString;
+        return username;
     }
 
     public void setUsernameString(String usernameString) {
-        this.usernameString = usernameString;
+        this.username = usernameString;
     }
 
-    public int getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(int password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
+  
+
     public String getDisplaynameString() {
-        return displaynameString;
+        return displayname;
     }
 
     public void setDisplaynameString(String displaynameString) {
-        this.displaynameString = displaynameString;
+        this.displayname = displaynameString;
     }
 
     public void setUsername(String username) {

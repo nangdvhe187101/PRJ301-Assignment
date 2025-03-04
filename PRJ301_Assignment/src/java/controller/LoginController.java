@@ -30,9 +30,10 @@ public class LoginController extends HttpServlet {
         if (user != null) {
             HttpSession session = req.getSession();
             session.setAttribute("user", user);
+            resp.sendRedirect("employeeInterface.jsp");
         }
         else{
-            resp.getWriter().println("Login failed!");
+            resp.sendRedirect("Login.jsp");
         }
     }
 
