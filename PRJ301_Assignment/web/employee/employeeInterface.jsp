@@ -11,19 +11,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="/styles.css">
 
-        <script>
-            function showForm()
-            {
-                document.querySelector(".content").style.display = "none";
-                document.getElementById('leave-form').style.display = "block";
-            }
 
-            function showHome()
-            {
-                document.querySelector(".content").style.display = "block";
-                document.getElementById('leave-form').style.display = "none";
-            }
-        </script>
         <script>
 
             //
@@ -90,9 +78,11 @@
         <div class="main-container">
             <div class="sidebar">
                 <h3>Nhân Viên</h3>
-                <a onclick="showHome()">🏠 Trang chủ</a>
-                <a onclick="showForm()">📝 Tạo đơn nghỉ phép</a>
-                <a href="">📄 Tất cả đơn đã tạo</a>
+                <a href="employeeInterface.jsp">🏠 Trang chủ</a>
+                <a href="create.jsp">📝 Tạo đơn nghỉ phép</a>
+                <a href="allOrders.jsp">📄 Tất cả đơn đã tạo</a>
+                <a href="leave-requests.jsp">🏠 Xem tất cả đơn nghỉ phép</a>
+                <a href="employee-status.jsp">📊 Xem tình trạng lao động</a>
             </div>
 
             <div class="content">
@@ -121,28 +111,7 @@
             </div>
 
             <!--creatOrder-->
-            <div class="leave-form" id="leave-form">
-                <h2>Đơn xin nghỉ phép</h2>
-                <p>
-                <p><b>User:</b> John Doe</p>
-                <p><b>Role:</b> Employee</p>
-                <p><b>Department:</b> Sales</p>
-                
-                </p>
-                <form>
-                    <label>Từ ngày:</label>
-                    <input type="date">
-                    <label>Tới ngày:</label>
-                    <input type="date">
-                    <label>Lý do</label>
-                    <textarea></textarea>
 
-                    <div class="btn-group">
-                        <button class="btn" type="submit">Gửi</button>
-                        <button class="btn" type="reset">Hủy</button>
-                    </div>
-                </form>
-            </div>
         </div>
     </body>
 </html>
