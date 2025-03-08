@@ -13,12 +13,12 @@ import java.util.logging.Logger;
  *
  * @author ADMIN
  */
-public class UserDBContext extends DBContext<User> {
+public class UserAccount extends DBContext {
 
     public User get(String username, String password) {
+        String sql = "SELECT username,displayname FROM [User]\n"
+                + "WHERE username = ? AND [password] = ?";
         try {
-            String sql = "SELECT username,displayname FROM [User]\n"
-                    + "WHERE username = ? AND [password] = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, username);
             stm.setString(2, password);
@@ -30,13 +30,13 @@ public class UserDBContext extends DBContext<User> {
                 return user;
             }
         } catch (Exception ex) {
-            Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (Exception ex) {
-                    Logger.getLogger(UserDBContext.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

@@ -1,44 +1,102 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+
 package controller;
 
-import dal.UserDBContext;
+import dal.UserAccount;
 import data.User;
+import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
 
 /**
  *
  * @author ADMIN
  */
 public class LoginController extends HttpServlet {
+   
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet LoginController</title>");  
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet LoginController at " + request.getContextPath () + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+    } 
 
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /** 
+     * Handles the HTTP <code>GET</code> method.
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+    /** 
+     * Handles the HTTP <code>POST</code> method.
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("Login.jsp").forward(req, resp);
+    }
+
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
-        UserDBContext db = new UserDBContext();
-        User user = db.get(username, password);
 
-        if (user != null) {
-            HttpSession session = req.getSession();
-            session.setAttribute("user", user);
-            resp.sendRedirect("employeeInterface.jsp");
-        }
-        else{
-            resp.sendRedirect("Login.jsp");
+        try {
+            UserAccount acc = new UserAccount();
+            User user = acc.get(username, password);
+
+            if (user == null) {
+                req.setAttribute("error", "Invalid username or password");
+                req.getRequestDispatcher("Login.jsp").forward(req, resp);
+            } else {
+                HttpSession session = req.getSession();
+                session.setAttribute("account", user);
+//                session.setAttribute("userRole", user.getRole()); // Lưu role từ database vào session
+                resp.sendRedirect("employee/employeeInterface.jsp");
+            }
+        } catch (Exception e) {
+            req.setAttribute("error", "An error occurred during login");
+            req.getRequestDispatcher("Login.jsp").forward(req, resp);
+            e.printStackTrace();
         }
     }
 
+    /** 
+     * Returns a short description of the servlet.
+     * @return a String containing servlet description
+     */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/employeeInterface.jsp").forward(req, resp);
-    }
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
 }
