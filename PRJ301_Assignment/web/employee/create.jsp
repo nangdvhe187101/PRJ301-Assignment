@@ -21,7 +21,7 @@
         </div>
         <div class="main-container">
             <div class="sidebar">
-                <h3>Nhân Viên</h3>
+                <h3>Chức vụ: ${sessionScope.userRole}</h3>
                 <a href="employeeInterface.jsp">🏠 Trang chủ</a>
                 <a href="create.jsp">📝 Tạo đơn nghỉ phép</a>
                 <a href="allOrders.jsp">📄 Tất cả đơn đã tạo</a>

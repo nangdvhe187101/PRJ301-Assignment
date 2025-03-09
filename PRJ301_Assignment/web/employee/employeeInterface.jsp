@@ -9,9 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" href="/styles.css">
-
-
+        <link rel="stylesheet" href="../styles.css">
         <script>
 
             //
@@ -77,7 +75,7 @@
         </div>
         <div class="main-container">
             <div class="sidebar">
-                <h3>Nhân Viên</h3>
+                <h3>Chức vụ: ${sessionScope.userRole}</h3>
                 <a href="employeeInterface.jsp">🏠 Trang chủ</a>
                 <a href="create.jsp">📝 Tạo đơn nghỉ phép</a>
                 <a href="allOrders.jsp">📄 Tất cả đơn đã tạo</a>
@@ -86,7 +84,7 @@
             </div>
 
             <div class="content">
-                <h3>Chào mừng</h3>
+                <h3>Chào mừng ${sessionScope.displayName}</h3>
                 <div class="calendar">
                     <div class="calendar-header">
                         <button onclick="changeMonth(-1)">◀ Tháng trước</button>

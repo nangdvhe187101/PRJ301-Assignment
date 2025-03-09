@@ -75,16 +75,18 @@ public class LoginController extends HttpServlet {
             User user = acc.get(username, password);
 
             if (user == null) {
-                req.setAttribute("error", "Invalid username or password");
+                req.setAttribute("error", "Vui lòng kiểm tra lại thông tin tài khoản hoặc mật khẩu!");
                 req.getRequestDispatcher("Login.jsp").forward(req, resp);
             } else {
                 HttpSession session = req.getSession();
                 session.setAttribute("account", user);
-//                session.setAttribute("userRole", user.getRole()); // Lưu role từ database vào session
-                resp.sendRedirect("employee/employeeInterface.jsp");
+                session.setAttribute("userRole", user.getRoleName());
+                session.setAttribute("displayName", user.getDisplayname());
+                session.setAttribute("userFeatures", user.getFeatures());
+                resp.sendRedirect(req.getContextPath() + "/employee/employeeInterface.jsp");
             }
         } catch (Exception e) {
-            req.setAttribute("error", "An error occurred during login");
+            req.setAttribute("error", "Đã sảy ra lỗi trong quá trình đăng nhập");
             req.getRequestDispatcher("Login.jsp").forward(req, resp);
             e.printStackTrace();
         }

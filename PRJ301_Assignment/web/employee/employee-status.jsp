@@ -10,7 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Tình Trạng Lao Động</title>
-        <link rel="stylesheet" href="/styles.css">
+        <link rel="stylesheet" href="../styles.css">
     </head>
     <body>
         <div class="navbar">
@@ -20,7 +20,7 @@
 
         <div class="main-container">
             <div class="sidebar">
-                <h3>Quản Lý</h3>
+                <h3>Chức vụ: ${sessionScope.userRole}</h3>
                 <a href="employeeInterface.jsp">🏠 Trang chủ</a>
                 <a href="create.jsp">📝 Tạo đơn nghỉ phép</a>
                 <a href="allOrders.jsp">📄 Tất cả đơn đã tạo</a>

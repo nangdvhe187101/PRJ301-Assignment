@@ -4,6 +4,8 @@
  */
 package data;
 
+import java.util.List;
+
 /**
  *
  * @author ADMIN
@@ -12,6 +14,8 @@ public class User {
     private String username;
     private String password;
     private String displayname;
+    private String roleName ;
+    private List<String> features;
 
     public String getUsername() {
         return username;
@@ -35,6 +39,22 @@ public class User {
 
     public void setDisplayname(String displayname) {
         this.displayname = displayname;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public List<String> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(List<String> features) {
+        this.features = features;
     }
 
 }

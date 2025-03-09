@@ -6,6 +6,8 @@ package dal;
 
 import data.User;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,19 +18,36 @@ import java.util.logging.Logger;
 public class UserAccount extends DBContext {
 
     public User get(String username, String password) {
-        String sql = "SELECT username,displayname FROM [User]\n"
-                + "WHERE username = ? AND [password] = ?";
+        User user = null;
+        List<String> features = new ArrayList<>();
+        String sql = "SELECT DISTINCT u.username, u.displayname, r.roleName, f.url\n"
+                + "FROM [User] u\n"
+                + "LEFT JOIN User_role ur ON u.username = ur.username\n"
+                + "LEFT JOIN Roles r ON ur.roleID = r.roleID\n"
+                + "LEFT JOIN Role_features rf ON rf.roleID = r.roleID\n"
+                + "LEFT JOIN Features f ON rf.featuresID = f.featuresID\n"
+                + "WHERE u.username = ? AND u.password = ?";
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, username);
             stm.setString(2, password);
             ResultSet rs = stm.executeQuery();
-            if (rs.next()) {
-                User user = new User();
-                user.setUsername(username);
-                user.setDisplayname(rs.getString("displayname"));
-                return user;
+            while (rs.next()) {
+                if (user == null) {
+                    user = new User();
+                    user.setUsername(username);
+                    user.setDisplayname(rs.getString("displayname"));
+                    user.setRoleName(rs.getString("roleName"));                   
+                }
+                String url = rs.getString("url");
+                if (url != null) {
+                    features.add(url);//tránh trùng url
+                }
             }
+            if (user != null) {
+                user.setFeatures(features);//gán danh sách url vào user
+            }
+            
         } catch (Exception ex) {
             Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -40,6 +59,6 @@ public class UserAccount extends DBContext {
                 }
             }
         }
-        return null;
+        return user;
     }
 }
