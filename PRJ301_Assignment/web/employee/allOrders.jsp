@@ -5,11 +5,14 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="../styles.css">
+        <title>Tất cả đơn đã tạo</title>
     </head>
     <body>
         <div class="navbar">
@@ -19,11 +22,25 @@
         <div class="main-container">
             <div class="sidebar">
                 <h3>Chức vụ: ${sessionScope.userRole}</h3>
-                <a href="employeeInterface.jsp">🏠 Trang chủ</a>
-                <a href="create.jsp">📝 Tạo đơn nghỉ phép</a>
-                <a href="allOrders.jsp">📄 Tất cả đơn đã tạo</a>
-                <a href="leave-requests.jsp">🏠 Xem tất cả đơn nghỉ phép</a>
-                <a href="employee-status.jsp">📊 Xem tình trạng lao động</a>
+                <c:forEach var="feature" items="${sessionScope.userFeatures}">
+                    <c:choose>
+                        <c:when test="${feature == '/employee/employeeInterface.jsp'}">
+                            <a href="${pageContext.request.contextPath}/employee/employeeInterface.jsp">🏠 Trang chủ</a>
+                        </c:when>
+                        <c:when test="${feature == '/employee/create.jsp'}">
+                            <a href="${pageContext.request.contextPath}/employee/create.jsp">📝 Tạo đơn nghỉ phép</a>
+                        </c:when>
+                        <c:when test="${feature == '/employee/allOrders.jsp'}">
+                            <a href="${pageContext.request.contextPath}/employee/allOrders.jsp">📄 Tất cả đơn đã tạo</a>
+                        </c:when>
+                        <c:when test="${feature == '/employee/leave-requests.jsp'}">
+                            <a href="${pageContext.request.contextPath}/employee/leave-requests.jsp">🏠 Xem tất cả đơn nghỉ phép</a>
+                        </c:when>
+                        <c:when test="${feature == '/employee/employee-status.jsp'}">
+                            <a href="${pageContext.request.contextPath}/employee/employee-status.jsp">📊 Xem tình trạng lao động</a>
+                        </c:when>
+                    </c:choose>
+                </c:forEach>
             </div>
             <div class="content">
                 <h2>Tất Cả Đơn Đã Tạo</h2>

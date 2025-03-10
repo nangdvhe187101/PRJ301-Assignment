@@ -37,17 +37,25 @@ public class UserAccount extends DBContext {
                     user = new User();
                     user.setUsername(username);
                     user.setDisplayname(rs.getString("displayname"));
-                    user.setRoleName(rs.getString("roleName"));                   
+                    user.setRoleName(rs.getString("roleName"));
                 }
                 String url = rs.getString("url");
-                if (url != null) {
+                if (url != null && !features.contains(url)) {
                     features.add(url);//tránh trùng url
                 }
             }
             if (user != null) {
-                user.setFeatures(features);//gán danh sách url vào user
+                //sắp xếp url theo thứ tự
+                List<String> orderedFeatures = new ArrayList<>();
+                orderedFeatures.add("/employee/employeeInterface.jsp");
+                orderedFeatures.add("/employee/create.jsp");
+                orderedFeatures.add("/employee/allOrders.jsp");
+                orderedFeatures.add("/employee/leave-requests.jsp");
+                orderedFeatures.add("/employee/employee-status.jsp");
+                orderedFeatures.retainAll(features);
+                user.setFeatures(orderedFeatures);
             }
-            
+
         } catch (Exception ex) {
             Logger.getLogger(UserAccount.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
