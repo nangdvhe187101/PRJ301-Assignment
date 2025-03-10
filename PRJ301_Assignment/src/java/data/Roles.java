@@ -4,6 +4,8 @@
  */
 package data;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author ADMIN
@@ -11,6 +13,8 @@ package data;
 public class Roles {
     private int roleID;
     private String roleName ;
+    private ArrayList<User> users = new ArrayList<>();
+    private ArrayList<Features> features = new ArrayList<>();
 
     public int getRoleID() {
         return roleID;

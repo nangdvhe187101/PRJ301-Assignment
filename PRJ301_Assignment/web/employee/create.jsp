@@ -47,14 +47,14 @@
             </div>
 
             <!-- Leave Form Content -->
-            <div class="leave-form" id="leave-form">
-                <form action="create" method="POST">
+            <div class="leave-form" id="leave-form">                
                     <h2>Đơn xin nghỉ phép</h2>
                     <p>
                     <p><b>User:</b>${sessionScope.displayName}</p>
                     <p><b>Role:</b>${sessionScope.userRole}</p>
                     <p><b>Department:</b> Sales</p>
                     </p>
+                    <form action="create" method="POST">
                     <label>Tiêu đề:</label>
                     <input type="text" name="title"/><br/>
                     <label>Từ ngày:</label>

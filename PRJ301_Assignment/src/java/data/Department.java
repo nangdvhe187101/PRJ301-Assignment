@@ -9,23 +9,23 @@ package data;
  * @author ADMIN
  */
 public class Department {
-    private int DepartmentID;
-    private String DepartmentName;
+    private int departmentID;
+    private String departmentName;
 
     public int getDepartmentID() {
-        return DepartmentID;
+        return departmentID;
     }
 
     public void setDepartmentID(int DepartmentID) {
-        this.DepartmentID = DepartmentID;
+        this.departmentID = departmentID;
     }
 
     public String getDepartmentName() {
-        return DepartmentName;
+        return departmentName;
     }
 
     public void setDepartmentName(String DepartmentName) {
-        this.DepartmentName = DepartmentName;
+        this.departmentName = departmentName;
     }
     
 }
