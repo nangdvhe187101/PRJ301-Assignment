@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  *
  * @author ADMIN
  */
-public abstract class DBContext {
+public abstract class DBContext<T> {
 
     protected Connection connection;
 
@@ -28,5 +28,4 @@ public abstract class DBContext {
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }
-
 }

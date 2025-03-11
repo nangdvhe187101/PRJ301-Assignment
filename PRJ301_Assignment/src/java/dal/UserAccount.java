@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  *
  * @author ADMIN
  */
-public class UserAccount extends DBContext {
+public class UserAccount extends DBContext<User> {
 
     public User get(String username, String password) {
         User user = null;

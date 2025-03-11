@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author ADMIN
  */
-public class LeaveRequestDB extends DBContext {
+public class LeaveRequestDB extends DBContext<LeaveRequests> {
 
     public void insert(LeaveRequests model) {
         try {

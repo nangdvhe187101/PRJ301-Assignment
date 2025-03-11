@@ -15,8 +15,34 @@ import java.util.logging.Logger;
  *
  * @author ADMIN
  */
-public class EmployeeDB extends DBContext {
+public class EmployeeDB extends DBContext<Employee> {
 
+    public ArrayList<Employee> list(){
+        ArrayList<Employee> employees = new ArrayList<>();
+        try {
+            String sql = "SELECT [employeeID]\n"
+                    + "      ,[employeeName]\n"
+                    + "  FROM [Employees]";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {                
+                Employee e = new Employee();
+                e.setEmployeeID(rs.getInt("employeeID"));
+                e.setEmployeeName(rs.getString("employeeName"));
+                employees.add(e);
+            }
+        }catch (SQLException ex) {
+            Logger.getLogger(EmployeeDB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (connection != null)
+                try {
+                connection.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(EmployeeDB.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return employees;
+    } 
     public Employee get(int id) {
         ArrayList<Employee> employees = new ArrayList<>();
         try {

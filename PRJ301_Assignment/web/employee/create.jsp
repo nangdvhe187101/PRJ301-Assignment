@@ -50,33 +50,32 @@
             <div class="leave-form" id="leave-form">                
                 <h2>Đơn xin nghỉ phép</h2>
                 <p>
-                <p><b>User:</b>${sessionScope.displayName}</p>
-                <p><b>Role:</b>${sessionScope.userRole}</p>
-                <p><b>Department:</b> Sales</p>
+                <p><b>User:</b>${sessionScope.displayName}</p><p><b>Department:</b> Sales</p><p><b>Role:</b>${sessionScope.userRole}</p>
                 </p>
-                <form action="create" method="POST">
-                    <label>Tiêu đề:</label>
-                    <input type="text" name="title"/><br/>
-                    <label>Từ ngày:</label>
-                    <input type="date" name="startDate" required>
-                    <label>Tới ngày:</label>
-                    <input type="date" name="endDate" required>
-                    Owner: 
-                    <select>
-                        <c:forEach>
-                            <option>
-                                <c:if>
-
+                <label>Tiêu đề:</label>
+                <input type="text" name="title" required/><br/>
+                <label>Từ ngày:</label>
+                <input type="date" name="startDate" required>
+                <label>Tới ngày:</label>
+                <input type="date" name="endDate" required>
+                <label>Owner:</label>
+                <select name="employeeID" required>
+                    <c:forEach items="${requestScope.employees}" var="e">
+                        <option value="${e.employeeID}"
+                                <c:if test="${e.employeeID eq sessionScope.user.employee.employeeID}">
+                                    selected="selected"
                                 </c:if>
-                            </option>
-                        </c:forEach>
-                    </select>
-                    <label>Lý do</label>
-                    <textarea name="reason" required></textarea>
-                    <div class="btn-group">
-                        <button class="btn" type="submit">Gửi</button>
-                        <button class="btn" type="reset">Hủy</button>
-                    </div>
+                                >
+                            ${e.employeeName}
+                        </option>
+                    </c:forEach>
+                </select>
+                <label>Lý do</label>
+                <textarea name="reason" required></textarea>
+                <div class="btn-group">
+                    <button class="btn" type="submit" value="Send">Gửi</button>
+                    <button class="btn" type="reset">Hủy</button>
+                </div>
                 </form>
             </div>
         </div>
