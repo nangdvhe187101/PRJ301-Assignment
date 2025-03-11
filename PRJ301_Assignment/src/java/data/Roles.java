@@ -16,6 +16,22 @@ public class Roles {
     private ArrayList<User> users = new ArrayList<>();
     private ArrayList<Features> features = new ArrayList<>();
 
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
+    }
+
+    public ArrayList<Features> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(ArrayList<Features> features) {
+        this.features = features;
+    }
+
     public int getRoleID() {
         return roleID;
     }

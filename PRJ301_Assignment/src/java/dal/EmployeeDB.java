@@ -72,6 +72,7 @@ public class EmployeeDB extends DBContext {
                 }
             }
         }
+        //xây dựng cấu trúc phân cấp
         if (employees.size() > 0) {
             Employee root = employees.get(0);
             for (Employee employee : employees) {

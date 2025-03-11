@@ -4,6 +4,7 @@
  */
 package data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,8 +15,26 @@ public class User {
     private String username;
     private String password;
     private String displayname;
+    private Employee employee;
     private String roleName ;
     private List<String> features;
+    private ArrayList<Roles> roles = new ArrayList<>();
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public ArrayList<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<Roles> roles) {
+        this.roles = roles;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
 
     public String getUsername() {
         return username;
