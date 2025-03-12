@@ -8,5 +8,5 @@
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/Login</url-pattern>
     </servlet-mapping>
-    
+
 </web-app>

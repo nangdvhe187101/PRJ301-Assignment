@@ -52,31 +52,27 @@
                 <p>
                 <p><b>User:</b>${sessionScope.displayName}</p><p><b>Department:</b> Sales</p><p><b>Role:</b>${sessionScope.userRole}</p>
                 </p>
-                <label>Tiêu đề:</label>
-                <input type="text" name="title" required/><br/>
-                <label>Từ ngày:</label>
-                <input type="date" name="startDate" required>
-                <label>Tới ngày:</label>
-                <input type="date" name="endDate" required>
-                <label>Owner:</label>
-                <select name="eID" required>
-                    <c:forEach items="${employees}" var="e">
-                        <option value="${e.employeeID}"
-                                <c:if test="${e.employeeID == sessionScope.user.employee.employeeID}">
-                                    selected="selected"
-                                </c:if>
-                                >
-                            ${e.employeeName}
-                        </option>
-                    </c:forEach>
-                </select>
-                <label>Lý do</label>
-                <textarea name="reason" required></textarea>
-                <div class="btn-group">
-                    <button class="btn" type="submit">Gửi</button>
-                    <button class="btn" type="reset">Hủy</button>
-                </div>
+                <form action="${pageContext.request.contextPath}/employee/Create" method="POST">
+                    <label>Tiêu đề:</label>
+                    <input type="text" name="title" required/><br/>
+                    <label>Từ ngày:</label>
+                    <input type="date" name="startDate" required>
+                    <label>Tới ngày:</label>
+                    <input type="date" name="endDate" required>
+                    <label>Lý do</label>
+                    <textarea name="reason" required></textarea>
+                    <div class="btn-group">
+                        <button class="btn" type="submit" value="Send">Gửi</button>
+                        <button class="btn" type="reset">Hủy</button>
+                    </div>
                 </form>
+                <c:if test="${not empty success}">
+                    <div style="color: green; font-weight: bold;">${success}</div>
+                </c:if>
+ss
+                <c:if test="${not empty error}">
+                    <div style="color: red; font-weight: bold;">${error}</div>
+                </c:if>
             </div>
         </div>
     </body>

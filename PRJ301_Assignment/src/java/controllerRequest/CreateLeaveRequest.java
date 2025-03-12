@@ -13,6 +13,7 @@ import data.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,22 +24,29 @@ import java.util.ArrayList;
  *
  * @author ADMIN
  */
+@WebServlet("/employee/Create")
 public class CreateLeaveRequest extends BaseRequiredUserController {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
         LeaveRequests lr = new LeaveRequests();
-        lr.setTitle(req.getParameter("title"));   
+        lr.setTitle(req.getParameter("title"));
         lr.setFrom(Date.valueOf(req.getParameter("startDate")));
         lr.setTo(Date.valueOf(req.getParameter("endDate")));
         lr.setReason(req.getParameter("reason"));
-        Employee owner = new Employee();
-        owner.setEmployeeID(Integer.parseInt(req.getParameter("eID")));
-        lr.setOwner(owner);
+        lr.setStatus(0);
         lr.setCreatedby(user);
+
         LeaveRequestDB lrdb = new LeaveRequestDB();
-        lrdb.insert(lr);
-        resp.getWriter().println("inserted" + lr.getId());
+        try {
+            lrdb.insert(lr);
+            req.setAttribute("success", "Gửi đơn thành công! Mã đơn là: " + lr.getId());
+        } catch (Exception ex) {
+            req.setAttribute("error", "Gửi đơn thất bại! Lỗi: " + ex.getMessage());
+        }
+
+        // load lại trang JSP và hiển thị thông báo
+        req.getRequestDispatcher("/employee/create.jsp").forward(req, resp);
     }
 
     @Override

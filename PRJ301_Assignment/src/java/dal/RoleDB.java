@@ -4,7 +4,6 @@
  */
 package dal;
 
-import com.oracle.wls.shaded.org.apache.bcel.generic.AALOAD;
 import data.Features;
 import data.Roles;
 import java.sql.*;
@@ -18,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class RoleDB extends DBContext<Roles> {
 
-    private ArrayList<Roles> getRolebyUsername(String username) {
+    public ArrayList<Roles> getRolebyUsername(String username) {
         ArrayList<Roles> roles = new ArrayList<>();
         try {
             String sql = "SELECT r.roleID, r.roleName "
@@ -40,7 +39,7 @@ public class RoleDB extends DBContext<Roles> {
     }
     
     //Lấy danh sách features theo roleID từ bảng Role_Features và Features.
-    private ArrayList<Features> getFeatures(String roleID) {
+    public ArrayList<Features> getFeatures(int roleID) {
         ArrayList<Features> featureses = new ArrayList<>();
         try {
             String sql = "SELECT f.featuresID, f.url " +
@@ -48,7 +47,7 @@ public class RoleDB extends DBContext<Roles> {
                         "INNER JOIN Role_Features rf ON f.featuresID = rf.featuresID " +
                         "WHERE rf.roleID = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, roleID);
+            stm.setInt(1, roleID);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 Features features = new Features();
