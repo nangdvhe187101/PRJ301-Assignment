@@ -12,9 +12,8 @@ public class LeaveRequests extends DBEntity{
     private String title;
     private Date from;
     private Date to;
-    private String reason ;
+    private String reason;
     private int status;
-    private Employee owner ;
     private java.util.Date createddate;
 
     public String getTitle() {
@@ -23,14 +22,6 @@ public class LeaveRequests extends DBEntity{
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 
     public Date getFrom() {
@@ -49,20 +40,20 @@ public class LeaveRequests extends DBEntity{
         this.to = to;
     }
 
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
     public int getStatus() {
         return status;
     }
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public Employee getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Employee owner) {
-        this.owner = owner;
     }
 
     public java.util.Date getCreateddate() {
@@ -72,5 +63,7 @@ public class LeaveRequests extends DBEntity{
     public void setCreateddate(java.util.Date createddate) {
         this.createddate = createddate;
     }
+
+    
     
 }

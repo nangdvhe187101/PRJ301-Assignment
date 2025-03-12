@@ -28,12 +28,12 @@ public class CreateLeaveRequest extends BaseRequiredUserController {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp, User user) throws ServletException, IOException {
         LeaveRequests lr = new LeaveRequests();
-        lr.setTitle(req.getParameter("title"));
+        lr.setTitle(req.getParameter("title"));   
+        lr.setFrom(Date.valueOf(req.getParameter("startDate")));
+        lr.setTo(Date.valueOf(req.getParameter("endDate")));
         lr.setReason(req.getParameter("reason"));
-        lr.setFrom(Date.valueOf(req.getParameter("from")));
-        lr.setTo(Date.valueOf(req.getParameter("to")));
         Employee owner = new Employee();
-        owner.setEmployeeID(Integer.parseInt(req.getParameter("employeeID")));
+        owner.setEmployeeID(Integer.parseInt(req.getParameter("eID")));
         lr.setOwner(owner);
         lr.setCreatedby(user);
         LeaveRequestDB lrdb = new LeaveRequestDB();
@@ -46,7 +46,7 @@ public class CreateLeaveRequest extends BaseRequiredUserController {
         EmployeeDB db = new EmployeeDB();
         ArrayList<Employee> employees = db.list();
         req.setAttribute("employee", employees);
-        req.getRequestDispatcher("employee/create.jsp").forward(req, resp);
+        req.getRequestDispatcher("../employee/create.jsp").forward(req, resp);
     }
 
 }

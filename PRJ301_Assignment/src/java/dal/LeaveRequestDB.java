@@ -43,9 +43,8 @@ public class LeaveRequestDB extends DBContext<LeaveRequests> {
             stm.setString(1, model.getTitle());
             stm.setDate(2, model.getFrom());
             stm.setDate(3, model.getTo());
-            stm.setString(4,model.getReason());
+            stm.setString(4, model.getReason());
             stm.setString(5, model.getCreatedby().getUsername());
-            stm.setInt(6, model.getOwner().getEmployeeID());
             stm.executeUpdate();
             //lấy ID của hồ sơ
             String sql_getID = "SELECT @@IDENTITY as roleID;";
@@ -56,13 +55,13 @@ public class LeaveRequestDB extends DBContext<LeaveRequests> {
             }
             connection.commit();
         } catch (SQLException ex) {
-             Logger.getLogger(LeaveRequestDB.class.getName()).log(Level.SEVERE, null, ex);
-             try {
+            Logger.getLogger(LeaveRequestDB.class.getName()).log(Level.SEVERE, null, ex);
+            try {
                 connection.rollback();
             } catch (SQLException ex1) {
-                 Logger.getLogger(LeaveRequestDB.class.getName()).log(Level.SEVERE, null, ex1);
+                Logger.getLogger(LeaveRequestDB.class.getName()).log(Level.SEVERE, null, ex1);
             }
         }
-        
+
     }
 }

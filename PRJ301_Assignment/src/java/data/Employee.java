@@ -11,35 +11,53 @@ import java.util.ArrayList;
  * @author ADMIN
  */
 public class Employee {
-    private int EmployeeID;
-    private String EmployeeName ;
-    private Department Dpt;
+    private int employeeID;
+    private String employeeName;
+    private Department dpt;
+    private int departmentID;
+    private int managerID;
     private Employee manager;
     private ArrayList<Employee> staffs = new ArrayList<>();
     private ArrayList<Employee> directstaffs = new ArrayList<>();
 
     public int getEmployeeID() {
-        return EmployeeID;
+        return employeeID;
     }
 
-    public void setEmployeeID(int EmployeeID) {
-        this.EmployeeID = EmployeeID;
+    public void setEmployeeID(int employeeID) {
+        this.employeeID = employeeID;
     }
 
     public String getEmployeeName() {
-        return EmployeeName;
+        return employeeName;
     }
 
-    public void setEmployeeName(String EmployeeName) {
-        this.EmployeeName = EmployeeName;
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
     }
 
     public Department getDpt() {
-        return Dpt;
+        return dpt;
     }
 
-    public void setDpt(Department Dpt) {
-        this.Dpt = Dpt;
+    public void setDpt(Department dpt) {
+        this.dpt = dpt;
+    }
+
+    public int getDepartmentID() {
+        return departmentID;
+    }
+
+    public void setDepartmentID(int departmentID) {
+        this.departmentID = departmentID;
+    }
+
+    public int getManagerID() {
+        return managerID;
+    }
+
+    public void setManagerID(int managerID) {
+        this.managerID = managerID;
     }
 
     public Employee getManager() {
@@ -66,5 +84,6 @@ public class Employee {
         this.directstaffs = directstaffs;
     }
 
+    
     
 }

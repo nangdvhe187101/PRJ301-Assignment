@@ -59,10 +59,10 @@
                 <label>Tới ngày:</label>
                 <input type="date" name="endDate" required>
                 <label>Owner:</label>
-                <select name="employeeID" required>
-                    <c:forEach items="${requestScope.employees}" var="e">
+                <select name="eID" required>
+                    <c:forEach items="${employees}" var="e">
                         <option value="${e.employeeID}"
-                                <c:if test="${e.employeeID eq sessionScope.user.employee.employeeID}">
+                                <c:if test="${e.employeeID == sessionScope.user.employee.employeeID}">
                                     selected="selected"
                                 </c:if>
                                 >
@@ -73,7 +73,7 @@
                 <label>Lý do</label>
                 <textarea name="reason" required></textarea>
                 <div class="btn-group">
-                    <button class="btn" type="submit" value="Send">Gửi</button>
+                    <button class="btn" type="submit">Gửi</button>
                     <button class="btn" type="reset">Hủy</button>
                 </div>
                 </form>

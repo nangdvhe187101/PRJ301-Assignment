@@ -22,7 +22,7 @@ public class EmployeeDB extends DBContext<Employee> {
         try {
             String sql = "SELECT [employeeID]\n"
                     + "      ,[employeeName]\n"
-                    + "  FROM [Employees]";
+                    + "  FROM [Employee]";
             PreparedStatement stm = connection.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {                

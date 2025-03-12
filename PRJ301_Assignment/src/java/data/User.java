@@ -66,6 +66,13 @@ public class User {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+        //đồng bộ feature từ role
+        this.features = new ArrayList<>();
+        for (Roles role : roles) {
+            for (Features feature : role.getFeatures()) {
+                this.features.add(feature.getUrl());
+            }
+        }
     }
 
     public List<String> getFeatures() {
