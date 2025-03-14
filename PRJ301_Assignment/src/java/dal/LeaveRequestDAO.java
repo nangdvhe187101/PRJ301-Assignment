@@ -17,49 +17,65 @@ import java.util.logging.Logger;
 public class LeaveRequestDAO extends DBContext<LeaveRequests> {
 
     public void insert(LeaveRequests model) {
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
         try {
+            // Bắt đầu transaction
             connection.setAutoCommit(false);
-            String sql = "INSERT INTO [LeaveRequests] ([title], [reason], [from], [to], [status], [createdby], [createddate]) "
+
+            // Câu lệnh SQL (sửa LeaveRequests thành LeaveRequest)
+            String sql = "INSERT INTO dbo.LeaveRequest (title, reason, [from], [to], status, createdby, createddate) "
                     + "VALUES (?, ?, ?, ?, ?, ?, GETDATE())";
-            PreparedStatement stm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-            stm.setString(1, model.getTitle());
-            stm.setString(2, model.getReason());
-            stm.setDate(3, model.getFrom());
-            stm.setDate(4, model.getTo());
-            stm.setInt(5, model.getStatus());
-            stm.setString(6, model.getCreatedby().getUsername());
+            // Gán giá trị cho các tham số
+            stmt.setString(1, model.getTitle());
+            stmt.setString(2, model.getReason());
+            stmt.setDate(3, model.getFrom());
+            stmt.setDate(4, model.getTo());
+            stmt.setInt(5, model.getStatus());
+            stmt.setString(6, model.getCreatedby().getUsername());
 
-            // Log trước khi thực thi
-            System.out.println("Executing SQL: " + sql);
-            System.out.println("Parameters: " + model.getTitle() + ", " + model.getReason() + ", "
-                    + model.getFrom() + ", " + model.getTo() + ", " + model.getStatus() + ", "
-                    + model.getCreatedby().getUsername());
+            // Thực thi câu lệnh
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Không thể chèn đơn nghỉ phép.");
+            }
 
-            int rowsAffected = stm.executeUpdate();
-            System.out.println("Rows affected: " + rowsAffected);
-
-            ResultSet rs = stm.getGeneratedKeys();
+            // Lấy ID được sinh tự động
+            rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 model.setId(rs.getInt(1));
+                System.out.println("Đơn nghỉ phép được tạo với ID: " + model.getId());
+            } else {
+                throw new SQLException("Không thể lấy ID tự động sinh ra.");
             }
+
+            // Commit transaction
             connection.commit();
         } catch (SQLException ex) {
-            System.out.println("SQL Error in insert: " + ex.getMessage());
-            Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, null, ex);
             try {
                 connection.rollback();
-            } catch (SQLException ex1) {
-                Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, null, ex1);
+                System.out.println("Rollback do lỗi: " + ex.getMessage());
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
             }
-            throw new RuntimeException("Error inserting leave request: " + ex.getMessage(), ex);
+            throw new RuntimeException("Lỗi khi tạo đơn nghỉ phép: " + ex.getMessage(), ex);
         } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                if (rs != null) {
+                    rs.close();
                 }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
         }
     }

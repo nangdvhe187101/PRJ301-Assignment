@@ -74,42 +74,43 @@ public class LoginController extends HttpServlet {
         String password = req.getParameter("password");
 
         try {
-            UserAccount acc = new UserAccount();
-            User user = acc.get(username, password);
+            UserAccount userDB = new UserAccount();
+            User user = userDB.get(username, password);
 
             if (user == null) {
-                req.setAttribute("error", "Vui lòng kiểm tra lại thông tin tài khoản hoặc mật khẩu!");
-                req.getRequestDispatcher("Login.jsp").forward(req, resp);
-            } else {
-                HttpSession session = req.getSession();
-                session.setAttribute("account", user);
-                session.setAttribute("userRole", user.getRoleName());
-                session.setAttribute("displayName", user.getDisplayname());
-                session.setAttribute("userFeatures", user.getFeatures());
-
-                String role = user.getRoleName();
-
-                switch (role) {
-                    case "Director":
-                        resp.sendRedirect(req.getContextPath() + "/employee/Director.jsp");
-                        break;
-                    case "Manager":
-                        resp.sendRedirect(req.getContextPath() + "/employee/Manager.jsp");
-                        break;
-                    case "Staff":
-                        resp.sendRedirect(req.getContextPath() + "/employee/Staff.jsp");
-                        break;
-                    default:
-                       
-                        resp.sendRedirect(req.getContextPath() + "/employee/Login.jsp");
-                        break;
-                }
-
+                req.setAttribute("error", "Sai tài khoản hoặc mật khẩu!");
+                req.getRequestDispatcher("/Login.jsp").forward(req, resp);
+                return;
             }
+
+            // Đăng nhập thành công, lưu thông tin vào session
+            HttpSession session = req.getSession();
+            session.setAttribute("account", user);
+            session.setAttribute("userRole", user.getRoleName());
+            session.setAttribute("displayName", user.getDisplayname());
+            session.setAttribute("userFeatures", user.getFeatures());
+
+            // Chuyển hướng theo vai trò
+            String redirectPage;
+            switch (user.getRoleName()) {
+                case "Director":
+                    redirectPage = "/employee/Director.jsp";
+                    break;
+                case "Manager":
+                    redirectPage = "/employee/Manager.jsp";
+                    break;
+                case "Staff":
+                    redirectPage = "/employee/Staff.jsp";
+                    break;
+                default:
+                    redirectPage = "/Login.jsp";
+                    break;
+            }
+            resp.sendRedirect(req.getContextPath() + redirectPage);
+
         } catch (Exception e) {
-            req.setAttribute("error", "Đã sảy ra lỗi trong quá trình đăng nhập");
-            req.getRequestDispatcher("Login.jsp").forward(req, resp);
-            e.printStackTrace();
+            req.setAttribute("error", "Lỗi đăng nhập: " + e.getMessage());
+            req.getRequestDispatcher("/Login.jsp").forward(req, resp);
         }
     }
 

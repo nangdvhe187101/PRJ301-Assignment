@@ -6,6 +6,17 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    if (session == null || session.getAttribute("account") == null) {
+        response.sendRedirect(request.getContextPath() + "/Login.jsp");
+        return;
+    }
+    String userRole = (String) session.getAttribute("userRole");
+    if (!"Staff".equals(userRole)) {
+        response.sendRedirect(request.getContextPath() + "/Login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -74,7 +85,7 @@
     <body>
         <div class="navbar">
             <h2>Hệ Thống Quản Lý Nghỉ Phép</h2>
-            <button class="logout">Đăng xuất</button>
+            <a href="${pageContext.request.contextPath}/logout" class="logout">Đăng xuất</a>
         </div>
         <div class="main-container">
             <div class="sidebar">
@@ -143,7 +154,7 @@
                 </table>
             </div>
 
-            <div id="create-order" class="content" style="display: none;">
+            <div id="create-order" class="content" >
                 <h2>Tạo Đơn Xin Nghỉ Phép</h2>
                 <p><b>User:</b> ${sessionScope.displayName}</p>
                 <p><b>Department:</b> Sales</p>
@@ -164,11 +175,11 @@
                 </form>
                 <c:if test="${not empty success}">
                     <div style="color: green; font-weight: bold;">${success}</div>
-                    <% session.removeAttribute("Thành công"); %>
+                    <% session.removeAttribute("success"); %>
                 </c:if>
                 <c:if test="${not empty error}">
                     <div style="color: red; font-weight: bold;">${error}</div>
-                    <% session.removeAttribute("Không thành công"); %>
+                    <% session.removeAttribute("error"); %>
                 </c:if>
             </div>
         </div>

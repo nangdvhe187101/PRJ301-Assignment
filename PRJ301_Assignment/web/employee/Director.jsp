@@ -1,4 +1,21 @@
+<%-- 
+    Document   : Director
+    Created on : Mar 14, 2025, 10:00:02 AM
+    Author     : ADMIN
+--%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    if (session == null || session.getAttribute("account") == null) {
+        response.sendRedirect(request.getContextPath() + "/Login.jsp");
+        return;
+    }
+    String userRole = (String) session.getAttribute("userRole");
+    if (!"Director".equals(userRole)) {
+        response.sendRedirect(request.getContextPath() + "/Login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -67,7 +84,7 @@
 <body>
     <div class="navbar">
         <h2>Hệ Thống Quản Lý Nghỉ Phép</h2>
-        <button class="logout">Đăng xuất</button>
+        <a href="${pageContext.request.contextPath}/logout" class="logout">Đăng xuất</a>
     </div>
     <div class="main-container">
         <div class="sidebar">
