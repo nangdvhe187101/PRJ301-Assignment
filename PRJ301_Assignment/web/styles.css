@@ -122,60 +122,62 @@ body
 /**********/
 
 
-.leave-form
-{
-    flex: 1;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-left: 20px;
-    display: none;
-}
-
-.leave-form h2
-{
-    margin-bottom: 15px;
-}
-
-.leave-form p
-{
-    margin-bottom: 10px;
-    font-size: 15px;
-}
-
-.leave-form label
-{
+.create-order label {
     display: block;
-    margin-top: 10px;
     font-weight: bold;
+    margin-bottom: 8px;
 }
 
-.leave-form input, .leave-form textarea
-{
-    width: 60%;
-    padding: 10px;
-    margin-top: 5px;
-    font-size: 15px;
-    border: 1px solid ;
-    border-radius: 10px;
-}
-
-.btn-group
-{
-    display: flex;
-    margin-top: 20px;
-
-}
-
-.btn
-{
-    padding: 15px 20px;
-    border: none;
-    font-size: 15px;
+.create-order input[type="text"], .create-order input[type="date"], .create-order textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
     border-radius: 5px;
-    background: #007bff;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+.create-order textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+.create-order .btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.create-order .btn {
+    background-color: #007bff;
     color: white;
-    margin: 0 10px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.create-order .btn:hover {
+    background-color: #0056b3;
+}
+
+.create-order .btn:active {
+    background-color: #00408d;
+}
+
+.create-order .btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.create-order input[type="text"]:focus,
+.create-order input[type="date"]:focus,
+.create-order textarea:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
 

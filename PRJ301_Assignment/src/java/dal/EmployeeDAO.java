@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  *
  * @author ADMIN
  */
-public class EmployeeDB extends DBContext<Employee> {
+public class EmployeeDAO extends DBContext<Employee> {
 
     public ArrayList<Employee> list(){
         ArrayList<Employee> employees = new ArrayList<>();
@@ -32,13 +32,13 @@ public class EmployeeDB extends DBContext<Employee> {
                 employees.add(e);
             }
         }catch (SQLException ex) {
-            Logger.getLogger(EmployeeDB.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EmployeeDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (connection != null)
                 try {
                 connection.close();
             } catch (SQLException ex) {
-                Logger.getLogger(EmployeeDB.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(EmployeeDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return employees;
@@ -87,13 +87,13 @@ public class EmployeeDB extends DBContext<Employee> {
                 employees.add(e);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(EmployeeDB.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EmployeeDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(EmployeeDB.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EmployeeDAO.class.getName()).log(Level.SEVERE, null, ex);
 
                 }
             }

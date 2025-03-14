@@ -9,4 +9,12 @@
         <url-pattern>/Login</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CreateLeaveRequest</servlet-name>
+        <servlet-class>controllerRequest.CreateLeaveRequest</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreateLeaveRequest</servlet-name>
+        <url-pattern>/employee/create</url-pattern>
+    </servlet-mapping>
 </web-app>
