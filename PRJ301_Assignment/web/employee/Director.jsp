@@ -7,12 +7,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     if (session == null || session.getAttribute("account") == null) {
-        response.sendRedirect(request.getContextPath() + "/Login.jsp");
+        response.sendRedirect(request.getContextPath() + "/Login");
         return;
     }
     String userRole = (String) session.getAttribute("userRole");
     if (!"Director".equals(userRole)) {
-        response.sendRedirect(request.getContextPath() + "/Login.jsp");
+        response.sendRedirect(request.getContextPath() + "/Login");
         return;
     }
 %>

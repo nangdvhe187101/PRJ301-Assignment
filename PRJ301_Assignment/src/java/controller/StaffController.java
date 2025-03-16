@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controllerRequest;
+package controller;
 
 import dal.LeaveRequestDAO;
 import data.LeaveRequests;
@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author ADMIN
  */
-public class ViewLeaveRequests extends HttpServlet {
+public class StaffController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +39,10 @@ public class ViewLeaveRequests extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewLeaveRequests</title>");
+            out.println("<title>Servlet StaffController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewLeaveRequests at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet StaffController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,33 +57,27 @@ public class ViewLeaveRequests extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    //dùng doGet để lấy ra session của user
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         User user = (User) request.getSession().getAttribute("account");
-        String username = null;
-        if (user != null) {
-            username = user.getUsername();
-        }
+        String username = (user != null) ? user.getUsername() : "";
         String role = (String) request.getSession().getAttribute("userRole");
+        if (user == null || role == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
-        //lấy danh sách đơn 
         LeaveRequestDAO lrDao = new LeaveRequestDAO();
         List<LeaveRequests> leaveRequests = lrDao.getLeaveRequests(username);
-
-        //hiển thị lên trang
         request.setAttribute("leaveRequests", leaveRequests);
-        request.setAttribute("activeTab", "all-orders");
-        //kiểm tra role rồi hiển thị 
-        if ("Staff".equals(role)) {
-            request.getRequestDispatcher("/employee/Staff.jsp").forward(request, response);
-        } else if ("Manager".equals(role)) {
-            request.getRequestDispatcher("/employee/manager.jsp").forward(request, response);
-        } else {
-            response.sendRedirect(request.getContextPath() + "/login");
+        String activeTab = (String) session.getAttribute("activeTab");
+        if (activeTab == null || activeTab.isEmpty()) {
+            activeTab = "calendar"; 
         }
-
+        request.setAttribute("activeTab", activeTab);
+        request.getRequestDispatcher("/employee/Staff.jsp").forward(request, response);
     }
 
     /**

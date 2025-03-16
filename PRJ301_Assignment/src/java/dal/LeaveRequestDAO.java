@@ -96,7 +96,7 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
                     + "    lr.status,\n"
                     + "    lr.createdby,\n"
                     + "    lr.createddate,\n"
-                    + "    manager.displayname AS managerDisplayName\n" // Đặt alias rõ ràng
+                    + "    manager.username\n"
                     + "FROM \n"
                     + "    dbo.LeaveRequest lr\n"
                     + "LEFT JOIN \n"
@@ -126,9 +126,9 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
                 leaveRequest.setCreatedby(createdby);
                 leaveRequest.setCreateddate(rs.getTimestamp("createddate"));
 
-                //tham chiếu tên người quản lý trực tiếp
-                String managerDisplayName = rs.getString("managerDisplayName");
-                leaveRequest.setProcessedByDisplayName(managerDisplayName != null ? managerDisplayName : "Chưa xử lý");
+                // lấy manager.username
+                String managerUsername = rs.getString("username");
+                leaveRequest.setProcessedByDisplayName(managerUsername != null ? managerUsername : "Chưa xử lý");
                 leaveRequests.add(leaveRequest);
             }
         } catch (SQLException ex) {
@@ -145,7 +145,6 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
                 if (connection != null) {
                     connection.close();
                 }
-
             } catch (SQLException ex) {
                 Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, "Lỗi khi đóng tài nguyên", ex);
                 ex.printStackTrace();

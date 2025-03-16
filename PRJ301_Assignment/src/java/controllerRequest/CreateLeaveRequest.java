@@ -69,6 +69,7 @@ public class CreateLeaveRequest extends HttpServlet {
 
             // Thông báo thành công
             session.setAttribute("success", "Đơn nghỉ phép đã được gửi thành công!");
+            session.setAttribute("activeTab", "create-order");
         } catch (Exception e) {
             // Thông báo lỗi
             session.setAttribute("error", "Lỗi khi gửi đơn: " + e.getMessage());
@@ -88,7 +89,7 @@ public class CreateLeaveRequest extends HttpServlet {
         if (referer != null && !referer.contains("Login")) {
             resp.sendRedirect(referer);
         } else {
-            String redirectPage = "/employee/Staff.jsp"; 
+            String redirectPage = "/employee/Staff"; 
             if ("Manager".equals(role)) {
                 redirectPage = "/employee/Manager.jsp";
             }

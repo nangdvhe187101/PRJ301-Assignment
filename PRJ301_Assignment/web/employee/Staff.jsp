@@ -6,14 +6,15 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="data.LeaveRequests, java.util.List" %>
 <%
     if (session == null || session.getAttribute("account") == null) {
-        response.sendRedirect(request.getContextPath() + "/Login.jsp");
+        response.sendRedirect(request.getContextPath() + "/Login");
         return;
     }
     String userRole = (String) session.getAttribute("userRole");
     if (!"Staff".equals(userRole)) {
-        response.sendRedirect(request.getContextPath() + "/Login.jsp");
+        response.sendRedirect(request.getContextPath() + "/Login");
         return;
     }
 %>
@@ -92,6 +93,19 @@
                 }
                 updateCalendar();
             });
+            function getStatus(status) {
+                switch (status) {
+                    case 0:
+                        return 'Inprogress';
+                    case 1:
+                        return 'Rejected';
+                    case 2:
+                        return 'Approved';
+                    default:
+                        return 'Unknown';
+                }
+            }
+            ;
         </script>
     </head>
     <body>
@@ -108,7 +122,7 @@
             </div>
 
             <div id="calendar" class="content">
-                <h3>Chào mừng</h3>
+                <h3>Chào mừng: ${sessionScope.displayName}</h3>
                 <div class="calendar">
                     <div class="calendar-header">
                         <button onclick="changeMonth(-1)">◀ Tháng trước</button>
@@ -147,35 +161,44 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <c:choose>
-                            <c:when test="${not empty leaveRequests}">
-                                <c:forEach var="leaveRequests" items="${leaveRequests}">
-                                    <tr>
-                                        <td>${leaveRequests.title}</td>
-                                        <td>${leaveRequests.from}</td>
-                                        <td>${leaveRequests.to}</td>
-                                        <td>${leaveRequests.createdby.username}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${leaveRequests.status == 0}">Inprogress</c:when>                                            
-                                                <c:when test="${leaveRequests.status == 1}">Rejected</c:when>                                            
-                                                <c:when test="${leaveRequests.status == 2}">Approver</c:when>                                            
-                                            </c:choose>
-                                        </td>                                    
-                                        <td>${request.processedByDisplayName}</td>
-                                        <td>
-                                            <a href="update.jsp" class="status-btn approve-btn">Update</a>
-                                            <a href="delete.jsp" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</a>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:when>
-                            <c:otherwise>
-                                <tr>
-                                    <td colspan="7">Bạn chưa tạo đơn nghỉ phép nào.</td>
-                                </tr>
-                            </c:otherwise>
-                        </c:choose>
+                        <% 
+                        List<LeaveRequests> leaveRequests = (List<LeaveRequests>) request.getAttribute("leaveRequests");
+                        if (leaveRequests != null && !leaveRequests.isEmpty()) {
+                            for (LeaveRequests leaveRequest : leaveRequests) {
+                                String fromDate = (leaveRequest.getFrom() != null) ? new java.text.SimpleDateFormat("yyyy-MM-dd").format(leaveRequest.getFrom()) : "";
+                                String toDate = (leaveRequest.getTo() != null) ? new java.text.SimpleDateFormat("yyyy-MM-dd").format(leaveRequest.getTo()) : "";
+                                String createdByUsername = (leaveRequest.getCreatedby() != null && leaveRequest.getCreatedby().getUsername() != null) ? leaveRequest.getCreatedby().getUsername() : "Unknown";
+                                String statusText = "";
+                                switch (leaveRequest.getStatus()) { 
+                                    case 0: statusText = "Inprogress"; break;
+                                    case 1: statusText = "Rejected"; break;
+                                    case 2: statusText = "Approved"; break;
+                                    default: statusText = "Unknown";
+                                }
+                                String processedBy = (leaveRequest.getProcessedByDisplayName() != null) ? leaveRequest.getProcessedByDisplayName() : "Chưa xử lý";
+                        %>
+                        <tr>
+                            <td><%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %></td> 
+                            <td><%= fromDate %></td>
+                            <td><%= toDate %></td>
+                            <td><%= createdByUsername %></td>
+                            <td><%= statusText %></td>
+                            <td><%= processedBy %></td>
+                            <td>
+                                <a href="update.jsp?id=<%= leaveRequest.getId() %>" class="status-btn approve-btn">Update</a> <!-- Đổi 'request' thành 'leaveRequest' -->
+                                <a href="delete.jsp?id=<%= leaveRequest.getId() %>" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</a>
+                            </td>
+                        </tr>
+                        <%
+                                }
+                            } else {
+                        %>
+                        <tr>
+                            <td colspan="7">Bạn chưa tạo đơn nghỉ phép nào.</td>
+                        </tr>
+                        <%
+                            }
+                        %>
                     </tbody>
                 </table>
             </div>

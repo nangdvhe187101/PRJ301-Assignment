@@ -97,10 +97,10 @@ public class LoginController extends HttpServlet {
                     redirectPage = "/employee/Director.jsp";
                     break;
                 case "Manager":
-                    redirectPage = "/employee/Manager.jsp";
+                    redirectPage = "/employee/Manager";
                     break;
                 case "Staff":
-                    redirectPage = "/employee/Staff.jsp";
+                    redirectPage = "/employee/Staff";
                     break;
                 default:
                     redirectPage = "/Login.jsp";
