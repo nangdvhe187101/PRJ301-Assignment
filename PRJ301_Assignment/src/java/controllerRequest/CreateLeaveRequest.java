@@ -88,7 +88,7 @@ public class CreateLeaveRequest extends HttpServlet {
         if (referer != null && !referer.contains("Login")) {
             resp.sendRedirect(referer);
         } else {
-            String redirectPage = "/employee/Staff.jsp"; // Mặc định là Staff
+            String redirectPage = "/employee/Staff.jsp"; 
             if ("Manager".equals(role)) {
                 redirectPage = "/employee/Manager.jsp";
             }

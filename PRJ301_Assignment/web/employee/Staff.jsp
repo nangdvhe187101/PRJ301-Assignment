@@ -80,6 +80,18 @@
                 showSection('calendar');
                 updateCalendar();
             });
+
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const activeTab = "${activeTab}"; // Lấy từ request
+                if (activeTab) {
+                    showSection(activeTab);
+                } else {
+                    showSection('calendar'); // Mặc định
+                }
+                updateCalendar();
+            });
         </script>
     </head>
     <body>
@@ -135,21 +147,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <a href="update.jsp" class="status-btn approve-btn">Update</a>
-                                <a href="delete.jsp" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="7">Bạn chưa tạo đơn nghỉ phép nào.</td>
-                        </tr>
+                        <c:choose>
+                            <c:when test="${not empty leaveRequests}">
+                                <c:forEach var="leaveRequests" items="${leaveRequests}">
+                                    <tr>
+                                        <td>${leaveRequests.title}</td>
+                                        <td>${leaveRequests.from}</td>
+                                        <td>${leaveRequests.to}</td>
+                                        <td>${leaveRequests.createdby.username}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${leaveRequests.status == 0}">Inprogress</c:when>                                            
+                                                <c:when test="${leaveRequests.status == 1}">Rejected</c:when>                                            
+                                                <c:when test="${leaveRequests.status == 2}">Approver</c:when>                                            
+                                            </c:choose>
+                                        </td>                                    
+                                        <td>${request.processedByDisplayName}</td>
+                                        <td>
+                                            <a href="update.jsp" class="status-btn approve-btn">Update</a>
+                                            <a href="delete.jsp" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="7">Bạn chưa tạo đơn nghỉ phép nào.</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
                     </tbody>
                 </table>
             </div>

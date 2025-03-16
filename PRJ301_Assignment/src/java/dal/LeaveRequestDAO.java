@@ -7,6 +7,8 @@ package dal;
 import data.LeaveRequests;
 import data.User;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,5 +80,78 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public List<LeaveRequests> getLeaveRequests(String username) {
+        List<LeaveRequests> leaveRequests = new ArrayList<>();
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT \n"
+                    + "    lr.leaveRequestID,\n"
+                    + "    lr.title,\n"
+                    + "    lr.reason,\n"
+                    + "    lr.[from],\n"
+                    + "    lr.[to],\n"
+                    + "    lr.status,\n"
+                    + "    lr.createdby,\n"
+                    + "    lr.createddate,\n"
+                    + "    manager.displayname AS managerDisplayName\n" // Đặt alias rõ ràng
+                    + "FROM \n"
+                    + "    dbo.LeaveRequest lr\n"
+                    + "LEFT JOIN \n"
+                    + "    [User] u ON lr.createdby = u.username\n"
+                    + "LEFT JOIN \n"
+                    + "    Employee e ON u.employeeID = e.employeeID\n"
+                    + "LEFT JOIN \n"
+                    + "    Employee managerEmp ON e.managerID = managerEmp.employeeID\n"
+                    + "LEFT JOIN \n"
+                    + "    [User] manager ON managerEmp.employeeID = manager.employeeID\n"
+                    + "WHERE \n"
+                    + "    lr.createdby = ?;";
+            stm = connection.prepareStatement(sql);
+            stm.setString(1, username);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+                LeaveRequests leaveRequest = new LeaveRequests();
+                leaveRequest.setId(rs.getInt("leaveRequestID"));
+                leaveRequest.setTitle(rs.getString("title"));
+                leaveRequest.setReason(rs.getString("reason"));
+                leaveRequest.setFrom(rs.getDate("from"));
+                leaveRequest.setTo(rs.getDate("to"));
+                leaveRequest.setStatus(rs.getInt("status"));
+                User createdby = new User();
+                createdby.setUsername(rs.getString("createdby"));
+                leaveRequest.setCreatedby(createdby);
+                leaveRequest.setCreateddate(rs.getTimestamp("createddate"));
+
+                //tham chiếu tên người quản lý trực tiếp
+                String managerDisplayName = rs.getString("managerDisplayName");
+                leaveRequest.setProcessedByDisplayName(managerDisplayName != null ? managerDisplayName : "Chưa xử lý");
+                leaveRequests.add(leaveRequest);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, "Lỗi khi lấy danh sách đơn nghỉ phép", ex);
+            throw new RuntimeException("Lỗi khi lấy danh sách đơn nghỉ phép: " + ex.getMessage(), ex);
+        } finally {
+            try {
+                if (stm != null) {
+                    stm.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, "Lỗi khi đóng tài nguyên", ex);
+                ex.printStackTrace();
+            }
+        }
+        System.out.println("Fetched " + leaveRequests.size() + " leave requests for username: " + username);
+        return leaveRequests;
     }
 }

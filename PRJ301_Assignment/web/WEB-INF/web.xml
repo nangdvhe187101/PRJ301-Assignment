@@ -4,11 +4,14 @@
         <servlet-name>LoginController</servlet-name>
         <servlet-class>controller.LoginController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewLeaveRequests</servlet-name>
+        <servlet-class>controllerRequest.ViewLeaveRequests</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/Login</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>CreateLeaveRequest</servlet-name>
         <servlet-class>controllerRequest.CreateLeaveRequest</servlet-class>
@@ -16,5 +19,9 @@
     <servlet-mapping>
         <servlet-name>CreateLeaveRequest</servlet-name>
         <url-pattern>/employee/create</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewLeaveRequests</servlet-name>
+        <url-pattern>/ViewLeaveRequests</url-pattern>
     </servlet-mapping>
 </web-app>

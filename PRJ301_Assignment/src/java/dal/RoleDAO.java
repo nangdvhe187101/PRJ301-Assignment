@@ -31,7 +31,7 @@ public class RoleDAO extends DBContext<Roles> {
                 Roles role = new Roles();
                 role.setRoleID(rs.getInt("roleID"));
                 role.setRoleName(rs.getString("roleName"));
-                roles.add(role); // Thêm role vào danh sách (bạn đã quên dòng này trong mã gốc)
+                roles.add(role); // Thêm role vào danh sách 
             }
         } catch (SQLException ex) {
             Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE, "Error fetching roles", ex);

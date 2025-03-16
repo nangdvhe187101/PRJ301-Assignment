@@ -15,6 +15,17 @@ public class LeaveRequests extends DBEntity{
     private String reason;
     private int status;
     private java.util.Date createddate;
+    private String processedByDisplayName;
+
+    public String getProcessedByDisplayName() {
+        return processedByDisplayName;
+    }
+
+    public void setProcessedByDisplayName(String processedByDisplayName) {
+        this.processedByDisplayName = processedByDisplayName;
+    }
+
+    
 
     public String getTitle() {
         return title;
