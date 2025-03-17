@@ -23,7 +23,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="../styles.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <title>Hệ Thống Quản Lý Nghỉ Phép</title>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
             let currentMonth = new Date().getMonth() + 1;
             let currentYear = new Date().getFullYear();
@@ -34,6 +37,8 @@
                     document.getElementById(id).style.display = "none";
                 });
                 document.getElementById(sectionId).style.display = "block";
+                // Lưu activeTab vào sessionStorage để servlet có thể sử dụng
+                sessionStorage.setItem("activeTab", sectionId);
             }
 
             function changeMonth(step) {
@@ -73,26 +78,10 @@
             }
 
             function updateCalendar() {
-                document.getElementById("calendar-title").innerHTML = "Tháng " + currentMonth + "  năm " + currentYear;
+                document.getElementById("calendar-title").innerHTML = "Tháng " + currentMonth + " năm " + currentYear;
                 generateCalendar();
             }
 
-            document.addEventListener("DOMContentLoaded", function () {
-                showSection('calendar');
-                updateCalendar();
-            });
-
-        </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const activeTab = "${activeTab}"; // Lấy từ request
-                if (activeTab) {
-                    showSection(activeTab);
-                } else {
-                    showSection('calendar'); // Mặc định
-                }
-                updateCalendar();
-            });
             function getStatus(status) {
                 switch (status) {
                     case 0:
@@ -105,7 +94,33 @@
                         return 'Unknown';
                 }
             }
-            ;
+
+            // Gộp các sự kiện DOMContentLoaded và xử lý modal
+            document.addEventListener("DOMContentLoaded", function () {
+                const activeTab = "${activeTab}";
+                if (activeTab && activeTab !== "") {
+                    showSection(activeTab);
+                } else {
+                    showSection('calendar');
+                }
+                updateCalendar();
+            });
+
+            // Xử lý modal update
+            $('#updateModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                var title = button.data('title');
+                var from = button.data('from');
+                var to = button.data('to');
+                var reason = button.data('reason');
+                var modal = $(this);
+                modal.find('#leaveRequestId').val(id);
+                modal.find('#title').val(title);
+                modal.find('#startDate').val(from);
+                modal.find('#endDate').val(to);
+                modal.find('#reason').val(reason);
+            });
         </script>
     </head>
     <body>
@@ -116,9 +131,9 @@
         <div class="main-container">
             <div class="sidebar">
                 <h3>Chức vụ: Staff</h3>
-                <a  onclick="showSection('calendar')">🏠 Trang chủ</a>
-                <a  onclick="showSection('create-order')">✍️ Tạo đơn nghỉ phép</a>
-                <a  onclick="showSection('all-orders')">📦 Xem tất cả đơn đã tạo</a>
+                <a onclick="showSection('calendar')">🏠 Trang chủ</a>
+                <a onclick="showSection('create-order')">✍️ Tạo đơn nghỉ phép</a>
+                <a onclick="showSection('all-orders')">📦 Xem tất cả đơn đã tạo</a>
             </div>
 
             <div id="calendar" class="content">
@@ -185,7 +200,14 @@
                             <td><%= statusText %></td>
                             <td><%= processedBy %></td>
                             <td>
-                                <a href="update.jsp?id=<%= leaveRequest.getId() %>" class="status-btn approve-btn">Update</a> <!-- Đổi 'request' thành 'leaveRequest' -->
+                                <button type="button" class="btn btn-primary" data-toggle="modal" 
+                                        data-target="#updateModal" 
+                                        data-id="<%= leaveRequest.getId() %>"
+                                        data-title="<%= leaveRequest.getTitle() %>"
+                                        data-from="<%= fromDate %>"
+                                        data-to="<%= toDate %>"
+                                        data-reason="<%= leaveRequest.getReason() %>">Update
+                                </button>
                                 <a href="delete.jsp?id=<%= leaveRequest.getId() %>" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</a>
                             </td>
                         </tr>
@@ -201,33 +223,79 @@
                         %>
                     </tbody>
                 </table>
+                <!-- Modal để cập nhật đơn nghỉ phép -->
+                <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="updateModalLabel">Cập Nhật Đơn Nghỉ Phép</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="updateForm" action="${pageContext.request.contextPath}/employee/update" method="POST">
+                                    <input type="hidden" name="id" id="leaveRequestId">
+                                    <div class="form-group">
+                                        <label for="title">Tiêu đề:</label>
+                                        <input type="text" class="form-control" name="title" id="title" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="startDate">Từ ngày:</label>
+                                        <input type="date" class="form-control" name="startDate" id="startDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="endDate">Tới ngày:</label>
+                                        <input type="date" class="form-control" name="endDate" id="endDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reason">Lý do:</label>
+                                        <textarea class="form-control" name="reason" id="reason" required></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                <button type="submit" form="updateForm" class="btn btn-primary">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div id="create-order" class="content" >
+            <div id="create-order" class="content" style="display: none;">
                 <h2>Tạo Đơn Xin Nghỉ Phép</h2>
-                <p><b>User:</b> ${sessionScope.displayName}</p>
-                <p><b>Department:</b> Sales</p>
-                <p><b>Role:</b> ${sessionScope.userRole}</p>
-                <form action="${pageContext.request.contextPath}/employee/create" method="POST">
-                    <label>Tiêu đề:</label>
-                    <input type="text" name="title" required/><br/>
-                    <label>Từ ngày:</label>
-                    <input type="date" name="startDate" required><br/>
-                    <label>Tới ngày:</label>
-                    <input type="date" name="endDate" required><br/>
-                    <label>Lý do:</label>
-                    <textarea name="reason" required></textarea><br/>
+                <span><b>User:</b> ${sessionScope.displayName}</span>
+                <span><b>Department:</b> Sales</span>
+                <span><b>Role:</b> ${sessionScope.userRole}</span>
+                <form action="${pageContext.request.contextPath}/employee/create" method="POST" class="leave-request-form">
+                    <div class="form-group">
+                        <label for="title">Tiêu đề:</label>
+                        <input type="text" name="title" id="title" class="form-control" required style="width: 100%; padding: 10px; font-size: 16px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Từ ngày:</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control" required style="width: 100%; padding: 10px; font-size: 16px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Tới ngày:</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control" required style="width: 100%; padding: 10px; font-size: 16px;">
+                    </div>
+                    <div class="form-group">
+                        <label for="reason">Lý do:</label>
+                        <textarea name="reason" id="reason" class="form-control" required style="width: 100%; padding: 10px; font-size: 10px; height: 100px;"></textarea>
+                    </div>
                     <div class="btn-group">
-                        <button class="btn" type="submit">Gửi</button>
-                        <button class="btn" type="reset">Hủy</button>
+                        <button type="submit" class="custom-btn approve-btn" style="padding: 10px 20px; font-size: 16px;">Gửi</button>
+                        <button type="reset" class="custom-btn reject-btn" style="padding: 10px 20px; font-size: 16px; margin-left: 20px;">Hủy</button>
                     </div>
                 </form>
                 <c:if test="${not empty success}">
-                    <div style="color: green; font-weight: bold;">${success}</div>
+                    <div style="color: green; font-weight: bold; margin-top: 15px;">${success}</div>
                     <% session.removeAttribute("success"); %>
                 </c:if>
                 <c:if test="${not empty error}">
-                    <div style="color: red; font-weight: bold;">${error}</div>
+                    <div style="color: red; font-weight: bold; margin-top: 15px;">${error}</div>
                     <% session.removeAttribute("error"); %>
                 </c:if>
             </div>
