@@ -221,4 +221,32 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
             }
         }
     }
+    
+    public void delete(int id) throws SQLException{
+        PreparedStatement stm = null;
+        try {
+            connection.setAutoCommit(false);
+            String sql = "DELETE FROM dbo.LeaveRequest WHERE leaveRequestID = ?";
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, id);
+            
+            int row = stm.executeUpdate();
+            if (row == 0) {
+                throw new SQLException("Không tìm thấy đơn với ID:" + id + "để xóa");
+            }
+            connection.commit();
+            
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
+            }
+        }
+    }
 }

@@ -158,10 +158,10 @@
         </div>
         <div class="main-container">
             <div class="sidebar">
-                <h3>Chức vụ: Staff</h3>
+                <h4>Chức vụ: Staff</h4>
                 <a onclick="showSection('calendar')">🏠 Trang chủ</a>
                 <a onclick="showSection('create-order')">✍️ Tạo đơn nghỉ phép</a>
-                <a onclick="showSection('all-orders')">📦 Xem tất cả đơn đã tạo</a>
+                <a onclick="showSection('all-orders')">📦 Tất cả đơn đã tạo</a>
             </div>
 
             <div id="calendar" class="content">
@@ -188,7 +188,6 @@
                     </table>
                 </div>
             </div>
-
             <div id="all-orders" class="content" style="display: none;">
                 <h2>Tất Cả Đơn Đã Tạo</h2>
                 <table class="leave-request-table">
@@ -221,20 +220,7 @@
                                 String processedBy = (leaveRequest.getProcessedByDisplayName() != null) ? leaveRequest.getProcessedByDisplayName() : "Chưa xử lý";
                         %>
                         <tr>
-                            <td>
-                                <a href="#" class="view-link" 
-                                   data-toggle="modal" 
-                                   data-target="#viewModal"
-                                   data-title="<%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %>"
-                                   data-from="<%= fromDate %>"
-                                   data-to="<%= toDate %>"
-                                   data-createdby="<%= createdByUsername %>"
-                                   data-status="<%= statusText %>"
-                                   data-processedby="<%= processedBy %>"
-                                   data-reason="<%= leaveRequest.getReason() != null ? leaveRequest.getReason() : "" %>">
-                                    <%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %>
-                                </a>
-                            </td> 
+                            <td><%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %></td> 
                             <td><%= fromDate %></td>
                             <td><%= toDate %></td>
                             <td><%= createdByUsername %></td>
@@ -250,7 +236,10 @@
                                         data-reason="<%= leaveRequest.getReason() != null ? leaveRequest.getReason() : "" %>">
                                     Update
                                 </button>
-                                <a href="delete.jsp?id=<%= leaveRequest.getId() %>" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</a>
+                                <form action="${pageContext.request.contextPath}/employee/delete" method="POST" style="display:inline;">
+                                    <input type="hidden" name="id" value="<%= leaveRequest.getId() %>">
+                                    <button type="submit" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</button>
+                                </form>
                             </td>
                         </tr>
                         <%
@@ -263,6 +252,14 @@
                         <%
                             }
                         %>
+                        <c:if test="${not empty success}">
+                        <div style="color: green; font-weight: bold; margin-top: 15px;">${success}</div>
+                        <% session.removeAttribute("success-all"); %>
+                    </c:if>
+                    <c:if test="${not empty error}">
+                        <div style="color: red; font-weight: bold; margin-top: 15px;">${error}</div>
+                        <% session.removeAttribute("error-all"); %>
+                    </c:if>
                     </tbody>
                 </table>
                 <!-- Modal để cập nhật đơn nghỉ phép -->
@@ -330,6 +327,7 @@
                         <button type="submit" class="custom-btn approve-btn" style="padding: 10px 20px; font-size: 16px;">Gửi</button>
                         <button type="reset" class="custom-btn reject-btn" style="padding: 10px 20px; font-size: 16px; margin-left: 20px;">Hủy</button>
                     </div>
+
                 </form>
                 <c:if test="${not empty success}">
                     <div style="color: green; font-weight: bold; margin-top: 15px;">${success}</div>
