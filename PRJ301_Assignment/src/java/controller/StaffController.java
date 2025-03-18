@@ -61,23 +61,23 @@ public class StaffController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        User user = (User) request.getSession().getAttribute("account");
-        String username = (user != null) ? user.getUsername() : "";
-        String role = (String) request.getSession().getAttribute("userRole");
-        if (user == null || role == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+    User user = (User) request.getSession().getAttribute("account");
+    String username = (user != null) ? user.getUsername() : "";
+    String role = (String) request.getSession().getAttribute("userRole");
+    if (user == null || role == null) {
+        response.sendRedirect(request.getContextPath() + "/login");
+        return;
+    }
 
-        LeaveRequestDAO lrDao = new LeaveRequestDAO();
-        List<LeaveRequests> leaveRequests = lrDao.getLeaveRequests(username);
-        request.setAttribute("leaveRequests", leaveRequests);
-        String activeTab = (String) session.getAttribute("activeTab");
-        if (activeTab == null || activeTab.isEmpty()) {
-            activeTab = "calendar"; 
-        }
-        request.setAttribute("activeTab", activeTab);
-        request.getRequestDispatcher("/employee/Staff.jsp").forward(request, response);
+    LeaveRequestDAO lrDao = new LeaveRequestDAO();
+    List<LeaveRequests> leaveRequests = lrDao.getLeaveRequests(username);
+    request.setAttribute("leaveRequests", leaveRequests);
+    String activeTab = (String) session.getAttribute("activeTab");
+    if (activeTab == null || activeTab.isEmpty()) {
+        activeTab = "calendar";
+    }
+    request.setAttribute("activeTab", activeTab);
+    request.getRequestDispatcher("/employee/Staff.jsp").forward(request, response);
     }
 
     /**

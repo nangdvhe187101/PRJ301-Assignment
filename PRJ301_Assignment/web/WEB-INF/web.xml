@@ -1,29 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+<web-app version="4.0" xmlns="http://xmlns.jcp.org/xml/ns/javaee" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+
     <servlet>
         <servlet-name>LoginController</servlet-name>
         <servlet-class>controller.LoginController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ViewLeaveRequests</servlet-name>
-        <servlet-class>controllerRequest.ViewLeaveRequests</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>StaffController</servlet-name>
-        <servlet-class>controller.StaffController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>ManagerController</servlet-name>
-        <servlet-class>controller.ManagerController</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>UpdateLeaveRequest</servlet-name>
-        <servlet-class>controllerRequest.UpdateLeaveRequest</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/Login</url-pattern>
     </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>ViewLeaveRequests</servlet-name>
+        <servlet-class>controllerRequest.ViewLeaveRequests</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ViewLeaveRequests</servlet-name>
+        <url-pattern>/employee/view</url-pattern> 
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>StaffController</servlet-name>
+        <servlet-class>controller.StaffController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>StaffController</servlet-name>
+        <url-pattern>/employee/Staff</url-pattern> 
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>ManagerController</servlet-name>
+        <servlet-class>controller.ManagerController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ManagerController</servlet-name>
+        <url-pattern>/employee/Manager</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>UpdateLeaveRequest</servlet-name>
+        <servlet-class>controllerRequest.UpdateLeaveRequest</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateLeaveRequest</servlet-name>
+        <url-pattern>/employee/update</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>CreateLeaveRequest</servlet-name>
         <servlet-class>controllerRequest.CreateLeaveRequest</servlet-class>
@@ -32,20 +60,5 @@
         <servlet-name>CreateLeaveRequest</servlet-name>
         <url-pattern>/employee/create</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>StaffController</servlet-name>
-        <url-pattern>/StaffController</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>StaffController</servlet-name>
-        <url-pattern>/employee/Staff</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ManagerController</servlet-name>
-        <url-pattern>/employee/Manager</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>UpdateLeaveRequest</servlet-name>
-        <url-pattern>/UpdateLeaveRequest</url-pattern>
-    </servlet-mapping>
+
 </web-app>

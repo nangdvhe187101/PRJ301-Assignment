@@ -37,7 +37,7 @@
                     document.getElementById(id).style.display = "none";
                 });
                 document.getElementById(sectionId).style.display = "block";
-                // Lưu activeTab vào sessionStorage để servlet có thể sử dụng
+
                 sessionStorage.setItem("activeTab", sectionId);
             }
 
@@ -97,29 +97,57 @@
 
             // Gộp các sự kiện DOMContentLoaded và xử lý modal
             document.addEventListener("DOMContentLoaded", function () {
-                const activeTab = "${activeTab}";
+                const activeTab = sessionStorage.getItem("activeTab");
                 if (activeTab && activeTab !== "") {
                     showSection(activeTab);
                 } else {
-                    showSection('calendar');
+                    showSection('calendar'); // Luôn hiển thị "Trang chủ" mặc định
+                    sessionStorage.setItem("activeTab", "calendar");
                 }
                 updateCalendar();
             });
 
             // Xử lý modal update
-            $('#updateModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget);
-                var id = button.data('id');
-                var title = button.data('title');
-                var from = button.data('from');
-                var to = button.data('to');
-                var reason = button.data('reason');
-                var modal = $(this);
-                modal.find('#leaveRequestId').val(id);
-                modal.find('#title').val(title);
-                modal.find('#startDate').val(from);
-                modal.find('#endDate').val(to);
-                modal.find('#reason').val(reason);
+            $(document).ready(function () {
+                $('#updateModal').on('show.bs.modal', function (event) {
+                    var button = $(event.relatedTarget);
+                    var id = button.data('id');
+                    var title = button.data('title') || '';
+                    var from = button.data('from') || '';
+                    var to = button.data('to') || '';
+                    var reason = button.data('reason') || '';
+                    var modal = $(this);
+                    modal.find('#leaveRequestId').val(id);
+                    modal.find('#title').val(title);
+                    modal.find('#startDate').val(from);
+                    modal.find('#endDate').val(to);
+                    modal.find('#reason').val(reason);
+                });
+
+                document.getElementById("updateForm").addEventListener("submit", function (event) {
+                    const startDate = document.getElementById("startDate").value;
+                    const endDate = document.getElementById("endDate").value;
+                    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+                    if (!startDate || !endDate || !datePattern.test(startDate) || !datePattern.test(endDate)) {
+                        alert("Vui lòng nhập ngày theo định dạng yyyy-MM-dd (ví dụ: 2025-03-18)");
+                        event.preventDefault();
+                        return false;
+                    }
+
+                    const start = new Date(startDate);
+                    const end = new Date(endDate);
+                    if (start > end) {
+                        alert("Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc!");
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+
+                // Chuyển tab khi có thông báo thành công
+                if ("${success}" !== "") {
+                    showSection('all-orders');
+                }
             });
         </script>
     </head>
@@ -193,7 +221,20 @@
                                 String processedBy = (leaveRequest.getProcessedByDisplayName() != null) ? leaveRequest.getProcessedByDisplayName() : "Chưa xử lý";
                         %>
                         <tr>
-                            <td><%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %></td> 
+                            <td>
+                                <a href="#" class="view-link" 
+                                   data-toggle="modal" 
+                                   data-target="#viewModal"
+                                   data-title="<%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %>"
+                                   data-from="<%= fromDate %>"
+                                   data-to="<%= toDate %>"
+                                   data-createdby="<%= createdByUsername %>"
+                                   data-status="<%= statusText %>"
+                                   data-processedby="<%= processedBy %>"
+                                   data-reason="<%= leaveRequest.getReason() != null ? leaveRequest.getReason() : "" %>">
+                                    <%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %>
+                                </a>
+                            </td> 
                             <td><%= fromDate %></td>
                             <td><%= toDate %></td>
                             <td><%= createdByUsername %></td>
@@ -203,10 +244,11 @@
                                 <button type="button" class="btn btn-primary" data-toggle="modal" 
                                         data-target="#updateModal" 
                                         data-id="<%= leaveRequest.getId() %>"
-                                        data-title="<%= leaveRequest.getTitle() %>"
+                                        data-title="<%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %>"
                                         data-from="<%= fromDate %>"
                                         data-to="<%= toDate %>"
-                                        data-reason="<%= leaveRequest.getReason() %>">Update
+                                        data-reason="<%= leaveRequest.getReason() != null ? leaveRequest.getReason() : "" %>">
+                                    Update
                                 </button>
                                 <a href="delete.jsp?id=<%= leaveRequest.getId() %>" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</a>
                             </td>
@@ -224,45 +266,44 @@
                     </tbody>
                 </table>
                 <!-- Modal để cập nhật đơn nghỉ phép -->
-                <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="updateModalLabel">Cập Nhật Đơn Nghỉ Phép</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                                    <span aria-hidden="true">×</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form id="updateForm" action="${pageContext.request.contextPath}/employee/update" method="POST">
-                                    <input type="hidden" name="id" id="leaveRequestId">
+                                <form id="updateForm" action="${pageContext.request.contextPath}/employee/update" method="POST" accept-charset="UTF-8">
+                                    <input type="hidden" id="leaveRequestId" name="id">
                                     <div class="form-group">
                                         <label for="title">Tiêu đề:</label>
-                                        <input type="text" class="form-control" name="title" id="title" required>
+                                        <input type="text" class="form-control" id="title" name="title" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="startDate">Từ ngày:</label>
-                                        <input type="date" class="form-control" name="startDate" id="startDate" required>
+                                        <input type="date" class="form-control" id="startDate" name="startDate" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="endDate">Tới ngày:</label>
-                                        <input type="date" class="form-control" name="endDate" id="endDate" required>
+                                        <input type="date" class="form-control" id="endDate" name="endDate" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="reason">Lý do:</label>
-                                        <textarea class="form-control" name="reason" id="reason" required></textarea>
+                                        <textarea class="form-control" id="reason" name="reason" required></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        <button type="submit" class="btn btn-primary">Lưu</button>
                                     </div>
                                 </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-                                <button type="submit" form="updateForm" class="btn btn-primary">Lưu</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div id="create-order" class="content" style="display: none;">
                 <h2>Tạo Đơn Xin Nghỉ Phép</h2>
                 <span><b>User:</b> ${sessionScope.displayName}</span>

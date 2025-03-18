@@ -7,20 +7,23 @@ package controllerRequest;
 import dal.LeaveRequestDAO;
 import data.LeaveRequests;
 import data.User;
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Date;
+import java.util.logging.Logger;
 
 /**
  *
  * @author ADMIN
  */
+
 public class UpdateLeaveRequest extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(UpdateLeaveRequest.class.getName());
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -57,10 +60,11 @@ public class UpdateLeaveRequest extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getRequestDispatcher("/employee/Staff").forward(request, response);
     }
 
     /**
@@ -76,39 +80,90 @@ public class UpdateLeaveRequest extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("account");
+        if (user == null) {
+            session.setAttribute("error", "Vui lòng đăng nhập!");
+            request.getRequestDispatcher("/employee/Staff").forward(request, response);
+            return;
+        }
+
+        String role = (String) session.getAttribute("userRole");
+        if (!"Staff".equals(role) && !"Manager".equals(role)) {
+            session.setAttribute("error", "Bạn không có quyền cập nhật đơn nghỉ phép!");
+            request.getRequestDispatcher("/employee/Staff").forward(request, response);
+            return;
+        }
+
         try {
-            //lấy dữ liệu từ form
-            int id = Integer.parseInt(request.getParameter("id"));
+
+            String idParam = request.getParameter("id");
             String title = request.getParameter("title");
             String reason = request.getParameter("reason");
-            Date form = Date.valueOf(request.getParameter("startDate"));
-            Date to = Date.valueOf(request.getParameter("endDate"));
+            String startDateStr = request.getParameter("startDate");
+            String endDateStr = request.getParameter("endDate");
 
+            LOGGER.info("Received parameters - id: " + idParam + ", title: " + title +
+                       ", startDate: " + startDateStr + ", endDate: " + endDateStr + ", reason: " + reason);
 
-            //tạo đối tượng
+            int id = Integer.parseInt(idParam);
+            Date from = Date.valueOf(startDateStr);
+            Date to = Date.valueOf(endDateStr);
+
+            // Kiểm tra quyền và trạng thái đơn
+            LeaveRequestDAO dao = new LeaveRequestDAO();
+            LeaveRequests existingRequest = dao.getLeaveRequestById(id); 
+            if (existingRequest == null) {
+                session.setAttribute("error", "Không tìm thấy đơn với ID: " + id);
+                session.setAttribute("activeTab", "all-orders");
+                redirectToPreviousPage(request, response);
+                return;
+            }
+            if (!existingRequest.getCreatedby().getUsername().equals(user.getUsername())) {
+                session.setAttribute("error", "Bạn không có quyền cập nhật đơn này!");
+                session.setAttribute("activeTab", "all-orders");
+                redirectToPreviousPage(request, response);
+                return;
+            }
+            if (existingRequest.getStatus() != 0) {
+                session.setAttribute("error", "Đơn đã được xử lý, không thể cập nhật!");
+                session.setAttribute("activeTab", "all-orders");
+                redirectToPreviousPage(request, response);
+                return;
+            }
+
+            // Cập nhật đối tượng
             LeaveRequests model = new LeaveRequests();
             model.setId(id);
             model.setTitle(title);
             model.setReason(reason);
-            model.setFrom(form);
+            model.setFrom(from);
             model.setTo(to);
 
-            //gọi leaveRequetsDAO để update
-            LeaveRequestDAO Dao = new LeaveRequestDAO();
-            Dao.update(model);
-
-            //thông báo thành công
-            request.getSession().setAttribute("success", "Cập nhật đơn thành công");
-            session.setAttribute("activeTab", "create-order");
-
+            dao.update(model);
+            session.setAttribute("success", "Cập nhật đơn thành công");
+            session.setAttribute("activeTab", "all-orders");
+        } catch (NumberFormatException e) {
+            LOGGER.severe("Invalid ID format: " + e.getMessage());
+            session.setAttribute("error", "Dữ liệu không hợp lệ (ID): " + e.getMessage());
+            session.setAttribute("activeTab", "all-orders");
+        } catch (IllegalArgumentException e) {
+            LOGGER.severe("Invalid date format: " + e.getMessage());
+            session.setAttribute("error", "Ngày không hợp lệ: " + e.getMessage());
+            session.setAttribute("activeTab", "all-orders");
         } catch (Exception e) {
-            session.setAttribute("lỗi update đơn", e);
+            LOGGER.severe("Error updating leave request: " + e.getMessage());
+            session.setAttribute("error", "Lỗi khi cập nhật đơn: " + e.getMessage());
+            session.setAttribute("activeTab", "all-orders");
         }
-        //chuyển hướng
+  
         redirectToPreviousPage(request, response);
     }
 
-    private void redirectToPreviousPage(HttpServletRequest req, HttpServletResponse resp)
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    private void redirectToPreviousPage(HttpServletRequest req, HttpServletResponse resp) 
             throws IOException {
         HttpSession session = req.getSession();
         String referer = req.getHeader("Referer");
@@ -117,19 +172,13 @@ public class UpdateLeaveRequest extends HttpServlet {
         if (referer != null && !referer.contains("Login")) {
             resp.sendRedirect(referer);
         } else {
-            String redirectPage = "/employee/Staff";
+            String redirectPage = "/employee/Staff"; 
             if ("Manager".equals(role)) {
-                redirectPage = "/employee/Manager.jsp";
+                redirectPage = "/employee/Manager";
             }
             resp.sendRedirect(req.getContextPath() + redirectPage);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";

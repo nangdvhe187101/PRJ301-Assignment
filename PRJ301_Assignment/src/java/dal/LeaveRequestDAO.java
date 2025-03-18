@@ -153,53 +153,71 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
         System.out.println("Fetched " + leaveRequests.size() + " leave requests for username: " + username);
         return leaveRequests;
     }
-    
+
     //update đơn nghỉ phép
-    public void update(LeaveRequests modal){
+    public void update(LeaveRequests model) throws SQLException {
+        PreparedStatement stm = null;
+        try {
+            connection.setAutoCommit(false);
+            String sql = "UPDATE dbo.LeaveRequest SET title = ?, reason = ?, [from] = ?, [to] = ? WHERE leaveRequestID = ?";
+            stm = connection.prepareStatement(sql);
+
+            stm.setString(1, model.getTitle());
+            stm.setString(2, model.getReason());
+            stm.setDate(3, model.getFrom());
+            stm.setDate(4, model.getTo());
+            stm.setInt(5, model.getId());
+
+            int rowsAffected = stm.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Không tìm thấy đơn với ID: " + model.getId());
+            }
+            connection.commit();
+            System.out.println("Đơn với ID " + model.getId() + " đã được cập nhật");
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
+            }
+        }
+    }
+
+    public LeaveRequests getLeaveRequestById(int id) throws SQLException {
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
-            connection.setAutoCommit(false);
-            String sql = "UPDATE dbo.LeaveRequest "
-                    + "SET title = ?, "
-                    + "reason = ?, "
-                    + "[from] = ?, "
-                    + "[to] = ?, "
-                    + "WHERE leaveRequestID = ?";
+            String sql = "SELECT * FROM dbo.LeaveRequest WHERE leaveRequestID = ?";
             stm = connection.prepareStatement(sql);
-            
-            stm.setString(1, modal.getTitle());
-            stm.setString(2, modal.getReason());
-            stm.setDate(3, modal.getFrom());
-            stm.setDate(4, modal.getTo());
-            stm.setString(5, modal.getCreatedby().getUsername());
-            //thực hiện câu lệnh
-            int update = stm.executeUpdate();
-            if (update == 0) {
-                throw new SQLException("Không thể Update, không tìm thấy đơn với ID:" + modal.getId());
+            stm.setInt(1, id);
+            rs = stm.executeQuery();
+
+            if (rs.next()) {
+                LeaveRequests request = new LeaveRequests();
+                request.setId(rs.getInt("leaveRequestID"));
+                request.setTitle(rs.getString("title"));
+                request.setReason(rs.getString("reason"));
+                request.setFrom(rs.getDate("from"));
+                request.setTo(rs.getDate("to"));
+                request.setStatus(rs.getInt("status"));
+                User user = new User();
+                user.setUsername(rs.getString("createdby"));
+                request.setCreatedby(user);
+                request.setCreateddate(rs.getDate("createddate"));
+                return request;
             }
-            //xác nhận update đơn
-            connection.commit();
-            System.out.println("Đơn nghỉ phép với ID:" + modal.getId() + "đã được update");
-        } catch (SQLException ex) {
-            try {
-                connection.rollback();
-                System.out.println("khôi phục lỗi" +ex.getMessage());
-            } catch (SQLException rollBackEx) {
-                Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, "Lỗi khi rollback", rollBackEx);
+            return null;
+        } finally {
+            if (rs != null) {
+                rs.close();
             }
-        }finally {
-            try {
-                if (stm != null) {
-                    stm.close();
-                }
-                if (connection != null) {
-                    connection.setAutoCommit(true);
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, "Lỗi khi đóng tài nguyên", ex);
-                ex.printStackTrace();
+            if (stm != null) {
+                stm.close();
             }
         }
     }

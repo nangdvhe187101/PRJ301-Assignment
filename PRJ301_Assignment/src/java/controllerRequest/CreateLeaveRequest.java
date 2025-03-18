@@ -91,7 +91,7 @@ public class CreateLeaveRequest extends HttpServlet {
         } else {
             String redirectPage = "/employee/Staff"; 
             if ("Manager".equals(role)) {
-                redirectPage = "/employee/Manager.jsp";
+                redirectPage = "/employee/Manager";
             }
             resp.sendRedirect(req.getContextPath() + redirectPage);
         }
