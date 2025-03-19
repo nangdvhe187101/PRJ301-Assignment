@@ -5,6 +5,7 @@
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     if (session == null || session.getAttribute("account") == null) {
         response.sendRedirect(request.getContextPath() + "/Login");
@@ -121,6 +122,13 @@
 
             <div id="leave-request" class="content" style="display: none;">
                 <h1>Quản Lý Đơn Nghỉ Phép</h1>
+                <c:if test="${not empty success}">
+                    <div class="success-message">${success}</div>
+                </c:if>
+                <c:if test="${not empty error}">
+                    <div class="error-message">${error}</div>
+                </c:if>
+
                 <table class="leave-request-table">
                     <thead>
                         <tr>
@@ -133,28 +141,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Xin nghỉ cưới</td>
-                            <td>1/1/2025</td>
-                            <td>3/1/2025</td>
-                            <td>Mr F</td>
-                            <td>Đang xử lý</td>
-                            <td>
-                                <button class="status-btn approve-btn">✅ Duyệt</button>
-                                <button class="status-btn reject-btn">❌ Từ chối</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Xin nghỉ đi chơi</td>
-                            <td>1/1/2025</td>
-                            <td>5/1/2025</td>
-                            <td>Mr E</td>
-                            <td>Đã từ chối</td>
-                            <td>
-                                <button class="status-btn approve-btn" disabled>✅ Duyệt</button>
-                                <button class="status-btn reject-btn" disabled>❌ Từ chối</button>
-                            </td>
-                        </tr>
+                        <c:forEach var="request" items="${leaveRequests}">
+                            <tr>
+                                <td>${request.title}</td>
+                                <td><fmt:formatDate value="${request.from}" pattern="dd/MM/yyyy"/></td>
+                                <td><fmt:formatDate value="${request.to}" pattern="dd/MM/yyyy"/></td>
+                                <td>${request.createdby.username}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${request.status == 0}">Đang xử lý</c:when>
+                                        <c:when test="${request.status == 1}">Đã duyệt</c:when>
+                                        <c:when test="${request.status == 2}">Đã từ chối</c:when>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <button class="status-btn approve-btn" disabled>✅ Duyệt</button>
+                                    <button class="status-btn reject-btn" disabled>❌ Từ chối</button>
+                                </td>
+                            </tr>
+                        </c:forEach>
                     </tbody>
                 </table>
             </div>

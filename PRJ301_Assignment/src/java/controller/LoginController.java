@@ -94,7 +94,7 @@ public class LoginController extends HttpServlet {
             String redirectPage;
             switch (user.getRoleName()) {
                 case "Director":
-                    redirectPage = "/employee/Director.jsp";
+                    redirectPage = "/employee/Director";
                     break;
                 case "Manager":
                     redirectPage = "/employee/Manager";
@@ -103,7 +103,7 @@ public class LoginController extends HttpServlet {
                     redirectPage = "/employee/Staff";
                     break;
                 default:
-                    redirectPage = "/Login.jsp";
+                    redirectPage = "/Login";
                     break;
             }
             resp.sendRedirect(req.getContextPath() + redirectPage);

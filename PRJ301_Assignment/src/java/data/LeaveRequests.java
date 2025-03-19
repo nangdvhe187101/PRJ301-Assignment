@@ -4,6 +4,7 @@
  */
 package data;
 import java.sql.*;
+import java.util.List;
 /**
  *
  * @author ADMIN
@@ -73,6 +74,10 @@ public class LeaveRequests extends DBEntity{
 
     public void setCreateddate(java.util.Date createddate) {
         this.createddate = createddate;
+    }
+
+    public void add(List<LeaveRequests> leaveRequests) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     
