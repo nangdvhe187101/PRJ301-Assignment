@@ -1,20 +1,10 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
-*/
-/* 
-    Created on : Mar 5, 2025, 1:30:01 AM
-    Author     : ADMIN
-*/
-body
-{
+body {
     font-family: sans-serif;
     margin: 0;
     background: #eef2f7;
 }
 
-.navbar
-{
+.navbar {
     background: #007bff;
     padding: 20px;
     display: flex;
@@ -23,23 +13,27 @@ body
     color: white;
 }
 
-.logout
-{
+.navbar h2 {
+    margin: 0;
+}
+
+.logout {
     background: white;
     border: 1px none black;
     padding: 10px 15px;
     border-radius: 5px;
     font-size: 15px;
+    text-decoration: none;
+    color: black;
+    display: inline-block;
 }
 
-.main-container
-{
+.main-container {
     display: flex;
     padding: 20px;
 }
 
-.sidebar
-{
+.sidebar {
     width: 250px;
     background: #007bff;
     color: white;
@@ -51,8 +45,7 @@ body
     border-radius: 5px;
 }
 
-.sidebar a
-{
+.sidebar a {
     color: white;
     text-decoration: none;
     display: block;
@@ -60,11 +53,14 @@ body
     align-items: center;
     padding: 12px 15px;
     margin-bottom: 5px;
-
+    cursor: pointer;
 }
 
-.content
-{
+.sidebar a:hover {
+    background-color: #0056b3;
+}
+
+.content {
     flex-grow: 1;
     background: white;
     padding: 20px;
@@ -73,54 +69,45 @@ body
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.calendar
-{
+.calendar {
     margin-top: 20px;
     background: #f9f9f9;
     padding: 20px;
     border-radius: 10px;
 }
 
-.calendar-header
-{
+.calendar-header {
     display: flex;
     justify-content: space-between;
-    align-content: center;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-.calendar-header button
-{
+.calendar-header button {
     padding: 8px 12px;
     border: none;
     border-radius: 5px;
-    background:  #007bff;
+    background: #007bff;
     color: white;
 }
 
-.calendar-table
-{
+.calendar-table {
     width: 100%;
     margin-top: 10px;
     border-collapse: collapse;
 }
 
-.calendar-table th, .calendar-table td
-{
+.calendar-table th, .calendar-table td {
     border: 1px solid #ccc;
     padding: 10px;
     text-align: center;
     width: 14%;
 }
 
-.calendar-table th
-{
+.calendar-table th {
     background: #007bff;
     color: white;
 }
-
-
-/**********/
-
 
 .create-order label {
     display: block;
@@ -180,8 +167,6 @@ body
     outline: none;
 }
 
-
-
 .leave-request-table,
 .employee-status-table {
     width: 100%;
@@ -213,6 +198,7 @@ body
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0 5px;
 }
 
 .approve-btn {
@@ -223,6 +209,22 @@ body
 .reject-btn {
     background: #dc3545;
     color: white;
+    margin-left: 20px;
+}
+
+.status-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.success-message {
+    color: green;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 10px;
 }
 
 .status-green {
@@ -231,23 +233,4 @@ body
 
 .status-red {
     color: red;
-}
-.logout {
-    background: white;
-    border: 1px none black;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 15px;
-    text-decoration: none; 
-    color: black; 
-    display: inline-block; 
-}
-.approve-btn {
-    background-color: #28a745; 
-    color: white;
-}
-.reject-btn {
-    background-color: #dc3545; 
-    color: white;
-    margin-left: 20px; 
 }

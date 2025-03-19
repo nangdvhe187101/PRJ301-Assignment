@@ -12,6 +12,10 @@
         <servlet-name>DirectorController</servlet-name>
         <servlet-class>controller.DirectorController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProcessLeaveRequest</servlet-name>
+        <servlet-class>controllerRequest.ProcessLeaveRequest</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -63,5 +67,9 @@
     <servlet-mapping>
         <servlet-name>DirectorController</servlet-name>
         <url-pattern>/employee/Director</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProcessLeaveRequest</servlet-name>
+        <url-pattern>/ProcessLeaveRequest</url-pattern>
     </servlet-mapping>
 </web-app>

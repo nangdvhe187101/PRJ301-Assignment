@@ -68,7 +68,7 @@ public class DirectorController extends HttpServlet {
         }
 
         LeaveRequestDAO lrDao = new LeaveRequestDAO();
-        List<LeaveRequests> leaveRequests = lrDao.getLeaveRequests(username);
+        List<LeaveRequests> leaveRequests = lrDao.listOfSubordinates(username);
         
         request.setAttribute("leaveRequests", leaveRequests);
         String activeTab = (String) session.getAttribute("activeTab");

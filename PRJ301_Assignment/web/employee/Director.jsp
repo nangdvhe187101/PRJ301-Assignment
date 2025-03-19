@@ -21,8 +21,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="../styles.css">
-        <title>Trang chủ</title>
+        <title>Hệ Thống Quản Lý Nghỉ Phép</title>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
             let currentMonth = new Date().getMonth() + 1;
             let currentYear = new Date().getFullYear();
@@ -123,7 +127,7 @@
             <div id="leave-request" class="content" style="display: none;">
                 <h1>Quản Lý Đơn Nghỉ Phép</h1>
                 <c:if test="${not empty success}">
-                    <div class="success-message">${success}</div>
+                    <div class="success-message" style="color: green>${success}</div>
                 </c:if>
                 <c:if test="${not empty error}">
                     <div class="error-message">${error}</div>
@@ -155,8 +159,16 @@
                                     </c:choose>
                                 </td>
                                 <td>
-                                    <button class="status-btn approve-btn" disabled>✅ Duyệt</button>
-                                    <button class="status-btn reject-btn" disabled>❌ Từ chối</button>
+                                    <form action="${pageContext.request.contextPath}/ProcessLeaveRequest" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="${request.id}">
+                                        <input type="hidden" name="action" value="approve">
+                                        <button type="submit" class="status-btn approve-btn">✅ Duyệt</button>
+                                    </form>
+                                    <form action="${pageContext.request.contextPath}/ProcessLeaveRequest" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="${request.id}">
+                                        <input type="hidden" name="action" value="reject">
+                                        <button type="submit" class="status-btn reject-btn">❌ Từ chối</button>
+                                    </form>
                                 </td>
                             </tr>
                         </c:forEach>

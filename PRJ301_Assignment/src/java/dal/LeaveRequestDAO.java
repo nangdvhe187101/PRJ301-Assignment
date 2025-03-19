@@ -222,21 +222,21 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
             }
         }
     }
-    
-    public void delete(int id) throws SQLException{
+
+    public void delete(int id) throws SQLException {
         PreparedStatement stm = null;
         try {
             connection.setAutoCommit(false);
             String sql = "DELETE FROM dbo.LeaveRequest WHERE leaveRequestID = ?";
             stm = connection.prepareStatement(sql);
             stm.setInt(1, id);
-            
+
             int row = stm.executeUpdate();
             if (row == 0) {
                 throw new SQLException("Không tìm thấy đơn với ID:" + id + "để xóa");
             }
             connection.commit();
-            
+
         } catch (SQLException e) {
             connection.rollback();
             throw e;
@@ -250,26 +250,27 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
             }
         }
     }
+
     //lấy danh sách nhân viên cấp dưới trực tiếp
-    public List<LeaveRequests> listOfSubordinates(String managerName ){
+    public List<LeaveRequests> listOfSubordinates(String managerName) {
         List<LeaveRequests> leaveRequests = new ArrayList<>();
         PreparedStatement stm = null;
         ResultSet rs = null;
         try {
-            String sql = "SELECT lr.leaveRequestID, lr.title, lr.reason, lr.[from], lr.[to], lr.status, lr.createdby, lr.createddate,\n" +
-"                         manager.username AS processby \n" +
-"                         FROM dbo.LeaveRequest lr \n" +
-"                         LEFT JOIN [User] u ON lr.createdby = u.username \n" +
-"                         LEFT JOIN Employee e ON u.employeeID = e.employeeID \n" +
-"                         LEFT JOIN Employee directorEmp ON e.managerID = directorEmp.employeeID\n" +
-"                         LEFT JOIN [User] director ON directorEmp.employeeID = director.employeeID \n" +
-"                         LEFT JOIN [User] manager ON e.managerID = manager.employeeID \n" +
-"                         WHERE director.username = ? AND lr.status = 0";
+            String sql = "SELECT lr.leaveRequestID, lr.title, lr.reason, lr.[from], lr.[to], lr.status, lr.createdby, lr.createddate,\n"
+                    + "                         manager.username AS processby \n"
+                    + "                         FROM dbo.LeaveRequest lr \n"
+                    + "                         LEFT JOIN [User] u ON lr.createdby = u.username \n"
+                    + "                         LEFT JOIN Employee e ON u.employeeID = e.employeeID \n"
+                    + "                         LEFT JOIN Employee directorEmp ON e.managerID = directorEmp.employeeID\n"
+                    + "                         LEFT JOIN [User] director ON directorEmp.employeeID = director.employeeID \n"
+                    + "                         LEFT JOIN [User] manager ON e.managerID = manager.employeeID \n"
+                    + "                         WHERE director.username = ? AND lr.status = 0";
             stm = connection.prepareStatement(sql);
             stm.setString(1, managerName);
             rs = stm.executeQuery();
-            
-            while (rs.next()) {                
+
+            while (rs.next()) {
                 LeaveRequests request = new LeaveRequests();
                 request.setId(rs.getInt("leaveRequestID"));
                 request.setTitle(rs.getString("title"));
@@ -281,15 +282,16 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
                 user.setUsername(rs.getString("createdby"));
                 request.setCreatedby(user);
                 request.setCreateddate(rs.getTimestamp("createddate"));
-                request.setProcessedByDisplayName(rs.getString("processby" != null ? rs.getString("processby") : "chưa được xử lý"));
-                request.add(leaveRequests);
-                
+                String processBy = rs.getString("processby");
+                request.setProcessedByDisplayName(processBy != null ? processBy : "Chưa được xử lý");
+                leaveRequests.add(request);
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, "Lỗi khi lấy danh sách đơn nghỉ phép cho Director", ex);
             throw new RuntimeException("Lỗi khi lấy danh sách đơn nghỉ phép: " + ex.getMessage(), ex);
-        }finally{
-            try {               
+        } finally {
+            try {
                 if (stm != null) {
                     stm.close();
                 }
@@ -304,5 +306,34 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
             }
         }
         return leaveRequests;
-    }   
+    }
+
+    public void updateStatus(int leaveRequestID, int status) throws SQLException {
+        PreparedStatement stm = null;
+        try {
+            connection.setAutoCommit(false);
+            String sql = "UPDATE dbo.LeaveRequest SET status = ? WHERE leaveRequestID = ?";
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, status);
+            stm.setInt(2, leaveRequestID);
+
+            int row = stm.executeUpdate();
+            if (row == 0) {
+                throw new SQLException("Không tìm thấy đơn với ID: " + leaveRequestID);
+            }
+            connection.commit();
+
+        } catch (SQLException ex) {
+            connection.rollback();
+            throw ex;
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
+            }
+        }
+    }
 }
