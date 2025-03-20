@@ -6,6 +6,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="data.LeaveRequests, java.util.List" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     if (session == null || session.getAttribute("account") == null) {
         response.sendRedirect(request.getContextPath() + "/Login");
@@ -84,9 +85,9 @@
                     case 0:
                         return 'Inprogress';
                     case 1:
-                        return 'Rejected';
-                    case 2:
                         return 'Approved';
+                    case 2:
+                        return 'Rejected';
                     default:
                         return 'Unknown';
                 }
@@ -191,6 +192,13 @@
 
             <div id="leave-request" class="content" style="display: none;">
                 <h1>Quản Lý Đơn Nghỉ Phép</h1>
+                <c:if test="${not empty success}">
+                    <div class="success-message" style="color: green">${success}</div>
+                </c:if>
+                <c:if test="${not empty error}">
+                    <div class="error-message">${error}</div>
+                </c:if>
+
                 <table class="leave-request-table">
                     <thead>
                         <tr>
@@ -203,28 +211,42 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Xin nghỉ cưới</td>
-                            <td>1/1/2025</td>
-                            <td>3/1/2025</td>
-                            <td>Mr F</td>
-                            <td>Đang xử lý</td>
-                            <td>
-                                <button class="status-btn approve-btn">✅ Duyệt</button>
-                                <button class="status-btn reject-btn">❌ Từ chối</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Xin nghỉ đi chơi</td>
-                            <td>1/1/2025</td>
-                            <td>5/1/2025</td>
-                            <td>Mr E</td>
-                            <td>Đã từ chối</td>
-                            <td>
-                                <button class="status-btn approve-btn" disabled>✅ Duyệt</button>
-                                <button class="status-btn reject-btn" disabled>❌ Từ chối</button>
-                            </td>
-                        </tr>
+                        <c:choose>
+                            <c:when test="${not empty subordinateRequests}">
+                                <c:forEach var="request" items="${subordinateRequests}">
+                                    <tr>
+                                        <td>${request.title}</td>
+                                        <td><fmt:formatDate value="${request.from}" pattern="dd/MM/yyyy"/></td>
+                                        <td><fmt:formatDate value="${request.to}" pattern="dd/MM/yyyy"/></td>
+                                        <td>${request.createdby.username}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${request.status == 0}">Đang xử lý</c:when>
+                                                <c:when test="${request.status == 1}">Đã duyệt</c:when>
+                                                <c:when test="${request.status == 2}">Đã từ chối</c:when>
+                                            </c:choose>
+                                        </td>
+                                        <td>
+                                            <form action="${pageContext.request.contextPath}/ProcessLeaveRequest" method="post" style="display:inline;">
+                                                <input type="hidden" name="id" value="${request.id}">
+                                                <input type="hidden" name="action" value="approve">
+                                                <button type="submit" class="status-btn approve-btn">✅ Duyệt</button>
+                                            </form>
+                                            <form action="${pageContext.request.contextPath}/ProcessLeaveRequest" method="post" style="display:inline;">
+                                                <input type="hidden" name="id" value="${request.id}">
+                                                <input type="hidden" name="action" value="reject">
+                                                <button type="submit" class="status-btn reject-btn">❌ Từ chối</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="6">Không có đơn nghỉ phép nào từ nhân viên cấp dưới.</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
                     </tbody>
                 </table>
             </div>
@@ -288,55 +310,53 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% 
-                        List<LeaveRequests> leaveRequests = (List<LeaveRequests>) request.getAttribute("leaveRequests");
-                        if (leaveRequests != null && !leaveRequests.isEmpty()) {
-                            for (LeaveRequests leaveRequest : leaveRequests) {
-                                String fromDate = (leaveRequest.getFrom() != null) ? new java.text.SimpleDateFormat("yyyy-MM-dd").format(leaveRequest.getFrom()) : "";
-                                String toDate = (leaveRequest.getTo() != null) ? new java.text.SimpleDateFormat("yyyy-MM-dd").format(leaveRequest.getTo()) : "";
-                                String createdByUsername = (leaveRequest.getCreatedby() != null && leaveRequest.getCreatedby().getUsername() != null) ? leaveRequest.getCreatedby().getUsername() : "Unknown";
-                                String statusText = "";
-                                switch (leaveRequest.getStatus()) { 
-                                    case 0: statusText = "Inprogress"; break;
-                                    case 1: statusText = "Rejected"; break;
-                                    case 2: statusText = "Approved"; break;
-                                    default: statusText = "Unknown";
-                                }
-                                String processedBy = (leaveRequest.getProcessedByDisplayName() != null) ? leaveRequest.getProcessedByDisplayName() : "Chưa xử lý";
-                        %>
-                        <tr>
-                            <td><%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %></td> 
-                            <td><%= fromDate %></td>
-                            <td><%= toDate %></td>
-                            <td><%= createdByUsername %></td>
-                            <td><%= statusText %></td>
-                            <td><%= processedBy %></td>
-                            <td>
-                                <button type="button" class="btn btn-primary" data-toggle="modal" 
-                                        data-target="#updateModal" 
-                                        data-id="<%= leaveRequest.getId() %>"
-                                        data-title="<%= leaveRequest.getTitle() != null ? leaveRequest.getTitle() : "" %>"
-                                        data-from="<%= fromDate %>"
-                                        data-to="<%= toDate %>"
-                                        data-reason="<%= leaveRequest.getReason() != null ? leaveRequest.getReason() : "" %>">
-                                    Update
-                                </button>
-                                <form action="${pageContext.request.contextPath}/employee/delete" method="POST" style="display:inline;">
-                                    <input type="hidden" name="id" value="<%= leaveRequest.getId() %>">
-                                    <button type="submit" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        <%
-                                }
-                            } else {
-                        %>
-                        <tr>
-                            <td colspan="7">Bạn chưa tạo đơn nghỉ phép nào.</td>
-                        </tr>
-                        <%
-                            }
-                        %>
+                        <c:choose>
+                            <c:when test="${not empty leaveRequests}">
+                                <c:forEach var="leaveRequest" items="${leaveRequests}">
+                                    <tr>
+                                        <td>${leaveRequest.title != null ? leaveRequest.title : ''}</td>
+                                        <td>
+                                            <fmt:formatDate value="${leaveRequest.from}" pattern="yyyy-MM-dd" var="fromDate"/>
+                                            ${fromDate}
+                                        </td>
+                                        <td>
+                                            <fmt:formatDate value="${leaveRequest.to}" pattern="yyyy-MM-dd" var="toDate"/>
+                                            ${toDate}
+                                        </td>
+                                        <td>${leaveRequest.createdby != null && leaveRequest.createdby.username != null ? leaveRequest.createdby.username : 'Unknown'}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${leaveRequest.status == 0}">Inprogress</c:when>
+                                                <c:when test="${leaveRequest.status == 1}">Approved</c:when>
+                                                <c:when test="${leaveRequest.status == 2}">Rejected</c:when>
+                                                <c:otherwise>Unknown</c:otherwise>
+                                            </c:choose>
+                                        </td>
+                                        <td>${leaveRequest.processedByDisplayName != null ? leaveRequest.processedByDisplayName : 'Chưa xử lý'}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" 
+                                                    data-target="#updateModal" 
+                                                    data-id="${leaveRequest.id}"
+                                                    data-title="${leaveRequest.title != null ? leaveRequest.title : ''}"
+                                                    data-from="${fromDate}"
+                                                    data-to="${toDate}"
+                                                    data-reason="${leaveRequest.reason != null ? leaveRequest.reason : ''}">
+                                                Update
+                                            </button>
+                                            <form action="${pageContext.request.contextPath}/employee/delete" method="POST" style="display:inline;">
+                                                <input type="hidden" name="id" value="${leaveRequest.id}">
+                                                <button type="submit" class="status-btn reject-btn" onclick="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="7">Bạn chưa tạo đơn nghỉ phép nào.</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
                     </tbody>
                 </table>
                 <!-- Modal để cập nhật đơn nghỉ phép -->

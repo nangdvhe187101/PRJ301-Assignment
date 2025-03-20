@@ -68,15 +68,18 @@ public class ManagerController extends HttpServlet {
         }
 
         LeaveRequestDAO lrDao = new LeaveRequestDAO();
-        List<LeaveRequests> leaveRequests = lrDao.getLeaveRequests(username);
-        
-        request.setAttribute("leaveRequests", leaveRequests);
-        String activeTab = (String) session.getAttribute("activeTab");
-        if (activeTab == null || activeTab.isEmpty()) {
-            activeTab = "calendar"; 
-        }
-        request.setAttribute("activeTab", activeTab);
-        request.getRequestDispatcher("/employee/Manager.jsp").forward(request, response);
+List<LeaveRequests> leaveRequests = lrDao.getLeaveRequests(username);
+LeaveRequestDAO Dao = new LeaveRequestDAO();
+List<LeaveRequests> subordinateRequests = Dao.listOfSubordinates(username); 
+String activeTab = (String) session.getAttribute("activeTab");
+if (activeTab == null || activeTab.isEmpty()) {
+    activeTab = "calendar";
+}
+
+request.setAttribute("leaveRequests", leaveRequests); 
+request.setAttribute("subordinateRequests", subordinateRequests); 
+request.setAttribute("activeTab", activeTab);
+request.getRequestDispatcher("/employee/Manager.jsp").forward(request, response);
     } 
 
     /** 

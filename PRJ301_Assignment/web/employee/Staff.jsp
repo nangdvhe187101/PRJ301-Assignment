@@ -87,9 +87,9 @@
                     case 0:
                         return 'Inprogress';
                     case 1:
-                        return 'Rejected';
-                    case 2:
                         return 'Approved';
+                    case 2:
+                        return 'Rejected';
                     default:
                         return 'Unknown';
                 }
@@ -213,8 +213,8 @@
                                 String statusText = "";
                                 switch (leaveRequest.getStatus()) { 
                                     case 0: statusText = "Inprogress"; break;
-                                    case 1: statusText = "Rejected"; break;
-                                    case 2: statusText = "Approved"; break;
+                                    case 1: statusText = "Approved"; break;
+                                    case 2: statusText = "Rejected"; break;
                                     default: statusText = "Unknown";
                                 }
                                 String processedBy = (leaveRequest.getProcessedByDisplayName() != null) ? leaveRequest.getProcessedByDisplayName() : "Chưa xử lý";
