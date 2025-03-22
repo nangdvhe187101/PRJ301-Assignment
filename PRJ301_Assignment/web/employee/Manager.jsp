@@ -152,7 +152,7 @@
     <body>
         <div class="navbar">
             <h2>Hệ Thống Quản Lý Nghỉ Phép - Quản Lý</h2>
-            <a href="${pageContext.request.contextPath}/logout" class="logout">Đăng xuất</a>
+            <a href="${pageContext.request.contextPath}/Logout" class="logout">Đăng xuất</a>
         </div>
         <div class="main-container">
             <div class="sidebar">
