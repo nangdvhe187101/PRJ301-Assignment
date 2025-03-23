@@ -251,48 +251,63 @@
                 </table>
             </div>
 
-            <div id="status" class="content" style="display: none;">
+            <div id="status" class="content" style="display: ${activeTab == 'status' ? 'block' : 'none'};">
                 <h1>Tình Trạng Lao Động</h1>
-                <table class="employee-status-table">
-                    <thead>
-                        <tr>
-                            <th>Nhân viên</th>
-                            <th>1/1</th>
-                            <th>2/1</th>
-                            <th>3/1</th>
-                            <th>4/1</th>
-                            <th>5/1</th>
-                            <th>6/1</th>
-                            <th>7/1</th>
-                            <th>8/1</th>
-                            <th>9/1</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Mr A</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-red">❌</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                        </tr>
-                        <tr>
-                            <td>Mr B</td>
-                            <td class="status-red">❌</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-red">❌</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                            <td class="status-green">✅</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <!-- Form tìm kiếm nhân viên và khoảng thời gian -->
+                <form action="${pageContext.request.contextPath}/EmployeeStatus" method="post">
+                    <div class="form-group">
+                        <label for="employeeID">Chọn nhân viên:</label>
+                        <select name="employeeID" id="employeeID" class="form-control" style="width: 200px; display: inline-block;">
+                            <option value="">-- Chọn nhân viên --</option>
+                            <c:forEach var="subordinate" items="${subordinates}">
+                                <option value="${subordinate.employeeID}" ${subordinate.employeeName == selectedEmployee ? 'selected' : ''}>
+                                    ${subordinate.employeeName}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Từ ngày:</label>
+                        <input type="date" name="startDate" id="startDate" class="form-control" style="width: 200px; display: inline-block;" value="${param.startDate}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">Đến ngày:</label>
+                        <input type="date" name="endDate" id="endDate" class="form-control" style="width: 200px; display: inline-block;" value="${param.endDate}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                </form>
+
+                <!-- Hiển thị thông báo lỗi nếu có -->
+                <c:if test="${not empty errorMessage}">
+                    <div class="alert alert-danger" style="margin-top: 10px;">
+                        ${errorMessage}
+                    </div>
+                </c:if>
+
+                <!-- Hiển thị bảng trạng thái lao động -->
+                <c:if test="${not empty dates}">
+                    <table class="employee-status-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>Nhân viên</th>
+                                    <c:forEach var="date" items="${dates}">
+                                    <th>${date}</th>
+                                    </c:forEach>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${selectedEmployee}</td>
+                                <c:forEach var="status" items="${statuses}">
+                                    <td class="${status ? 'status-green' : 'status-red'}">
+                                        ${status ? '✅' : '❌'}
+                                    </td>
+                                </c:forEach>
+                            </tr>
+                        </tbody>
+                    </table>
+                </c:if>
             </div>
 
             <div id="all-orders" class="content" style="display: none;">

@@ -336,4 +336,43 @@ public class LeaveRequestDAO extends DBContext<LeaveRequests> {
             }
         }
     }
+
+    public ArrayList<LeaveRequests> getApprovedLeaveRequests(int employeeID, String startDate, String endDate) {
+        ArrayList<LeaveRequests> approvedRequests = new ArrayList<>();
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            String sql = "SELECT [from], [to] FROM LeaveRequest WHERE createdby = (SELECT username FROM [User] WHERE employeeID = ?) "
+                    + "AND status = 1 AND [to] >= ? AND [from] <= ?";
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, employeeID);
+            stm.setString(2, startDate);
+            stm.setString(3, endDate);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                LeaveRequests lr = new LeaveRequests();
+                lr.setFrom(rs.getDate("from"));
+                lr.setTo(rs.getDate("to"));
+                approvedRequests.add(lr);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, "Lỗi khi lấy danh sách yêu cầu nghỉ phép đã duyệt", ex);
+            throw new RuntimeException("Lỗi khi lấy danh sách yêu cầu nghỉ phép: " + ex.getMessage(), ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(LeaveRequestDAO.class.getName()).log(Level.SEVERE, "Lỗi khi đóng tài nguyên", ex);
+            }
+        }
+        return approvedRequests;
+    }
 }

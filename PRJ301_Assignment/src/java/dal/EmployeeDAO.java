@@ -124,4 +124,6 @@ public class EmployeeDAO extends DBContext<Employee> {
         }
         return null;
     }
+    //lấy danh sách cấp dưới trực tiếp
+
 }
